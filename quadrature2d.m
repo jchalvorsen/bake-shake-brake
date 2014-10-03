@@ -27,10 +27,13 @@ switch (Nq)
         C3 = [1/3, 1/5, 1/5, 3/5];
         rho = [-9/16, 25/48*[1, 1, 1 ]];
 end
+% Time in area
+P = [p1', p2', p3'; 1, 1, 1];
+area = 1/2*det(P);
 x = zeros(Nq,length(p1));
 partial_sums = zeros(Nq,1);
 for i = 1:Nq
     x(i,:) = C1(i).*p1 + C2(i).*p2 + C3(i).*p3;
     partial_sums(i) = rho(i)*g(x(i,:));
 end
-I = sum(partial_sums);
+I = area*sum(partial_sums);
