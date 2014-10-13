@@ -57,6 +57,6 @@ end
 
 tri  = delaunay(p(:,1), p(:,2));
 edge = N-alpha(end)+1:N;
-edge = [edge', edge'+1]
-edge(end) = N-alpha(end)+1
+edge = [edge', edge'+1];
+edge(end) = N-alpha(end)+1;
 
