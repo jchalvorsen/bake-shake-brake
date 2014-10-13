@@ -74,16 +74,61 @@ A_int = A(internalPoints,internalPoints);
 % Getting internal nodes of b:
 b_int = b(internalPoints);
 
-u_sol = zeros(length(internalPoints),1);
-for i = internalPoints
-    point = p(i,:);
-    %norm(point,2)
-    u_sol(i) = u(point);
+u_int = A_int\b_int;
+
+U_sol = zeros(100,100);
+z = linspace(-1,1);
+for i = 1:1
+    thisTri = tri(i,:);
+    P = p(thisTri,:);       % Active points in triangle
+    p1 = P(1,:);
+    p2 = P(2,:);
+    p3 = P(3,:);
+    
+    
+    max_x = max(P(:,1));
+    min_x = min(P(:,1));
+    max_y = max(P(:,2));
+    min_y = min(P(:,2));
+    
+    x = z(max_x >= z & z >= min_x);
+    y = z(max_y >= z & z >= min_y);
+    
+    
+    
+    % Finding basis function:
+    Q = [[1;1;1], P];
+    phi1 = @(x) [1, x(1), x(2)]*(Q\[1; 0; 0]);
+    phi2 = @(x) [1, x(1), x(2)]*(Q\[0; 1; 0]);
+    phi3 = @(x) [1, x(1), x(2)]*(Q\[0; 0; 1]);
+    
+    
+    
+    
 end
-% Solving system:
-u_is = A_int\b_int;
+
+
+
+
+% Plotting reference solution:
+U = zeros(100);
+z = linspace(-1,1);
+for i = 1:100
+    for j = 1:100
+        pz = [z(i), z(j)];
+        if norm(pz,2) <= 1
+            U(i,j) = u(pz);
+        end
+    end
+end
+figure
+surf(z,z,U)
 
 figure
-plot(u_is, '*-r')
 hold on
-plot(u_sol, 'black')
+% plot our result function
+for i = 1:length(internalPoints)
+    point = p(internalPoints(i),:);
+    plot3(point(1), point(2), u_int(i))
+end
+    
