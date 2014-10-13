@@ -11,35 +11,6 @@ triplot(tri,p(:,1), p(:,2))
 f = @(x,y) -8*pi*cos(2*pi*(x^2+y^2)) +16*pi^2*(x^2+y^2)*sin(2*pi*(x^2+y^2));
 u = @(x) sin(2*pi*(x(1)^2+x(2)^2));
 
-Z = tri(1,:);
-P = p(Z,:);
-
-M = [[1;1;1], P];
-coef = inv(M);
-psi1 = @(x,y) coef(1,1) + coef(2,1)*x + coef(3,1)*y;
-
-QQ = zeros(100);
-z = linspace(-1,1);
-for i = 1:100
-    for j = 1:100
-        QQ(i,j) = psi1(z(i),z(j));
-    end
-end
-%surf(QQ)
-
-
-%figure
-hold on
-for i = 1:length(edge)
-    left = p(edge(i,1),:);
-    right = p(edge(i,2),:);
-    x = linspace(left(1),right(1));
-    y = linspace(left(2), right(2));
-    %plot(x,y)
-end
-
-
-%% Trying to make all in a loop:
 A = sparse(N,N);
 
 divpsi1 = [-1;-1];
