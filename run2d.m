@@ -3,10 +3,10 @@ clear all
 
 addpath include
 
-N = 70;
+N = 100;
 
 [p tri edge] = getDisk(N);
-triplot(tri,p(:,1), p(:,2))
+%triplot(tri,p(:,1), p(:,2))
 
 f = @(x,y) -8*pi*cos(2*pi*(x^2+y^2)) +16*pi^2*(x^2+y^2)*sin(2*pi*(x^2+y^2));
 u = @(x) sin(2*pi*(x(1)^2+x(2)^2));
@@ -27,7 +27,7 @@ for i = 1:length(tri)
     area = 0.5*abs(det(areaMatrix));
     
     % Constructing jacobian and solving shit
-    Jac = [P(2,:)' - P(1,:)', P(3,:)' - P(1,:)'];
+    Jac = [P(2,:) - P(1,:); P(3,:) - P(1,:)];
     
     % Ak is element matrix for this element
     Ak = transpose(Jac\divpsi)*(Jac\divpsi)*area;
@@ -69,13 +69,19 @@ allPoints = 1:N;
 boundaryPoints = edge(:,1);
 internalPoints = setdiff(allPoints,boundaryPoints);
 
-A_int = A(internalPoints,internalPoints);
+% Setting rows and cols of boundaryPoints equal to 0
+A(boundaryPoints, :) = 0;
+A(:, boundaryPoints) = 0;
+b(boundaryPoints) = 0;
+A(boundaryPoints, boundaryPoints) = speye(length(boundaryPoints), length(boundaryPoints));
+
 
 % Getting internal nodes of b:
 b_int = b(internalPoints);
-det(A_int)
-u_int = A_int\b_int;
+det(A)
+u_int = A\b;
 
+% Finding solution on M*M grid
 M = 100;
 U_sol = zeros(M,M);
 z = linspace(-1,1,M);
@@ -99,34 +105,23 @@ for i = 1:length(tri)
     phi1 = @(x) [1, x(1), x(2)]*(Q\[1; 0; 0]);
     phi2 = @(x) [1, x(1), x(2)]*(Q\[0; 1; 0]);
     phi3 = @(x) [1, x(1), x(2)]*(Q\[0; 0; 1]);
-    
-    % Getting weights from u_internal
-    weight = zeros(3,1);
-    for j = 1:length(thisTri)
-        if any(thisTri(j) == internalPoints)
-            weight(j) = u_int(internalPoints(internalPoints==thisTri(j)));
-        else
-            weight(j) = 0;
-        end
-    end
-    
+       
     uu = zeros(length(x), length(y));
     for j = 1:length(x)
         for k = 1:length(y)
             point = [x(j), y(k)];
-            s = phi1(point);
-            t = phi2(point);
-            r = phi3(point);
+            p1v = phi1(point);
+            p2v = phi2(point);
+            p3v = phi3(point);
+            q = [p1v, p2v, p3v];
             % Check if point is inside the triangle
-            if (s <= 1 && s >= 0) && (t <= 1 && t >= 0) && (r <= 1 && r >= 0)
-                uu(j,k) = s*weight(1) + t*weight(2) + r*weight(3);
+            if (p1v <= 1 && p1v >= 0) && (p2v <= 1 && p2v >= 0) && (p3v <= 1 && p3v >= 0)
+                % Add if inside triangle
+                uu(j,k) = q*u_int(thisTri);
             end
      
         end
-    end
-    %figure
-    
-    
+    end   
     
     % merging uu into U_sol
     xstart = find(z ==x (1));
@@ -135,14 +130,12 @@ for i = 1:length(tri)
     yend = ystart + length(y) - 1;
 
     U_sol(xstart:xend, ystart:yend) = uu + U_sol(xstart:xend, ystart:yend);
-    %figure
-    pcolor(z,z,U_sol)
-    weight
-    pause()
 end
  
 figure
+subplot(1,2,1)
 surf(z, z, U_sol)
+title('FEM solution')
 
 
 % Plotting reference solution:
@@ -156,14 +149,40 @@ for i = 1:100
         end
     end
 end
-figure
+subplot(1,2,2)
 surf(z,z,U)
+title('Reference solution')
 
 figure
 hold on
-% plot our result function
-for i = 1:length(internalPoints)
-    point = p(internalPoints(i),:);
+% Scatterplot of our result points
+for i = 1:length(p)
+    point = p(i,:);
     plot3(point(1), point(2), u_int(i),'*')
 end
-    
+title('Scatterplot of results')
+
+
+% Finding reference solution in points:
+u_ref = zeros(N,1);
+for i = 1:length(p)
+    point = p(i,:);
+    u_ref(i) = u(point); 
+end
+
+figure
+plot(u_ref, '*-black')
+hold on
+plot(u_int, '*-b')
+title('Values in points')
+
+
+figure
+subplot(2,1,1)
+trisurf(tri,p(:,1),p(:,2),0*p(:,1),u_int,'edgecolor','k','facecolor','interp');
+view(2),axis equal,colorbar,title('FEM solution')
+
+subplot(2,1,2)
+trisurf(tri,p(:,1),p(:,2),0*p(:,1),u_ref,'edgecolor','k','facecolor','interp');
+view(2),axis equal,colorbar, title('Analytical solution')
+
