@@ -6,12 +6,13 @@ addpath include
 N = 100;
 
 [p tri edge] = getDisk(N);
-%triplot(tri,p(:,1), p(:,2))
 
+% Declaring functions
 f = @(x,y) -8*pi*cos(2*pi*(x^2+y^2)) +16*pi^2*(x^2+y^2)*sin(2*pi*(x^2+y^2));
 u = @(x) sin(2*pi*(x(1)^2+x(2)^2));
 
 A = sparse(N,N);
+b = zeros(N,1);
 
 divpsi1 = [-1;-1];
 divpsi2 = [1; 0];
@@ -19,12 +20,13 @@ divpsi3 = [0; 1];
 divpsi = [divpsi1, divpsi2, divpsi3];
 
 for i = 1:length(tri)
-    thisTri = tri(i,:);
-    P = p(thisTri,:);       % Active points in triangle
+    nodes = tri(i,:);
+    P = p(nodes,:);       % Active points in triangle
     
+    %% Getting stiffness matrix
     % Calculating area
-    areaMatrix = [[1;1;1], P];
-    area = 0.5*abs(det(areaMatrix));
+    Q = [[1;1;1], P];
+    area = 0.5*abs(det(Q));
     
     % Constructing jacobian and solving shit
     Jac = [P(2,:) - P(1,:); P(3,:) - P(1,:)];
@@ -32,42 +34,25 @@ for i = 1:length(tri)
     % Ak is element matrix for this element
     Ak = transpose(Jac\divpsi)*(Jac\divpsi)*area;
     
-    % Put elemenet matrix in right place
-    A(thisTri,thisTri) = A(thisTri,thisTri) + Ak;
+    % Put element matrix in right place
+    A(nodes,nodes) = A(nodes,nodes) + Ak;
     
-end
-
-%% Trying to get b vector:
-
-b = zeros(N,1);
-for i = 1:length(tri)
-    thisTri = tri(i,:);
-    P = p(thisTri,:);       % Active points in triangle
-    p1 = P(1,:);
-    p2 = P(2,:);
-    p3 = P(3,:);
-    
-    
+    %% Getting b vector 
     % Finding basis function:
-    Q = [[1;1;1], P];
     phi1 = @(x) ([1, x(1), x(2)]*(Q\[1; 0; 0]))*f(x(1),x(2));
     phi2 = @(x) ([1, x(1), x(2)]*(Q\[0; 1; 0]))*f(x(1),x(2));
     phi3 = @(x) ([1, x(1), x(2)]*(Q\[0; 0; 1]))*f(x(1),x(2));
     
     % Getting values:
-    val1 = quadrature2d(p1, p2, p3, 4, phi1);
-    val2 = quadrature2d(p1, p2, p3, 4, phi2);
-    val3 = quadrature2d(p1, p2, p3, 4, phi3);
+    val1 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, phi1);
+    val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, phi2);
+    val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, phi3);
     
     % Putting in right place:
-    b(thisTri) = b(thisTri) + [val1; val2; val3];
-    
+    b(nodes) = b(nodes) + [val1; val2; val3];  
 end
-% Get A without boundary points (internal A):
-
-allPoints = 1:N;
+%% Get A without boundary points
 boundaryPoints = edge(:,1);
-internalPoints = setdiff(allPoints,boundaryPoints);
 
 % Setting rows and cols of boundaryPoints equal to 0
 A(boundaryPoints, :) = 0;
@@ -75,22 +60,16 @@ A(:, boundaryPoints) = 0;
 b(boundaryPoints) = 0;
 A(boundaryPoints, boundaryPoints) = speye(length(boundaryPoints), length(boundaryPoints));
 
+% Solving the linear system
+u_sol = A\b;
 
-% Getting internal nodes of b:
-b_int = b(internalPoints);
-det(A)
-u_int = A\b;
-
-% Finding solution on M*M grid
+%% Finding solution on M*M grid and plotting
 M = 100;
 U_sol = zeros(M,M);
 z = linspace(-1,1,M);
 for i = 1:length(tri)
-    thisTri = tri(i,:);
-    P = p(thisTri,:);       % Active points in triangle
-    p1 = P(1,:);
-    p2 = P(2,:);
-    p3 = P(3,:);
+    nodes = tri(i,:);
+    P = p(nodes,:);       % Active points in triangle
    
     max_x = max(P(:,1));
     min_x = min(P(:,1));
@@ -110,14 +89,14 @@ for i = 1:length(tri)
     for j = 1:length(x)
         for k = 1:length(y)
             point = [x(j), y(k)];
-            p1v = phi1(point);
-            p2v = phi2(point);
-            p3v = phi3(point);
-            q = [p1v, p2v, p3v];
+            phi1v = phi1(point);
+            phi2v = phi2(point);
+            phi3v = phi3(point);
+            q = [phi1v, phi2v, phi3v];
             % Check if point is inside the triangle
-            if (p1v <= 1 && p1v >= 0) && (p2v <= 1 && p2v >= 0) && (p3v <= 1 && p3v >= 0)
+            if (phi1v <= 1 && phi1v >= 0) && (phi2v <= 1 && phi2v >= 0) && (phi3v <= 1 && phi3v >= 0)
                 % Add if inside triangle
-                uu(j,k) = q*u_int(thisTri);
+                uu(j,k) = q*u_sol(nodes);
             end
      
         end
@@ -158,7 +137,7 @@ hold on
 % Scatterplot of our result points
 for i = 1:length(p)
     point = p(i,:);
-    plot3(point(1), point(2), u_int(i),'*')
+    plot3(point(1), point(2), u_sol(i),'*')
 end
 title('Scatterplot of results')
 
@@ -173,13 +152,13 @@ end
 figure
 plot(u_ref, '*-black')
 hold on
-plot(u_int, '*-b')
+plot(u_sol, '*-b')
 title('Values in points')
 
 
 figure
 subplot(2,1,1)
-trisurf(tri,p(:,1),p(:,2),0*p(:,1),u_int,'edgecolor','k','facecolor','interp');
+trisurf(tri,p(:,1),p(:,2),0*p(:,1),u_sol,'edgecolor','k','facecolor','interp');
 view(2),axis equal,colorbar,title('FEM solution')
 
 subplot(2,1,2)
