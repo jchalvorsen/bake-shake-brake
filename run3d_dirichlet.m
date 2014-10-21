@@ -3,7 +3,7 @@ clear all
 
 addpath include
 
-N = 1000;
+N = 1500;
 
 [p tetr edge] = getSphere(N);
 
@@ -16,7 +16,7 @@ trisurf(tr, Xb(:,1), Xb(:,2), Xb(:,3), 'FaceColor', 'red','FaceAlpha', 0.8);
 
 % Declaring functions
 f = @(x,y,z) -12*pi*cos(2*pi*(x^2+y^2+z^2)) +16*pi^2*(x^2+y^2+z^2)*sin(2*pi*(x^2+y^2+z^2));
-u = @(x) sin(2*pi*(x(1)^2 + x(2)^2) + x(3)^2);
+u = @(x) sin(2*pi*(x(1)^2 + x(2)^2 + x(3)^2));
 
 A = sparse(N,N);
 b = zeros(N,1);
@@ -34,7 +34,7 @@ for i = 1:length(tetr)
     %% Getting stiffness matrix
     % Calculating area
     Q = [[1;1;1;1], P];
-    vol = 0.5*abs(det(Q));
+    vol = abs(det(Q))/6;
     
     % Constructing jacobian and solving shit
     Jac = [P(2,:) - P(1,:); P(3,:) - P(1,:); P(4,:) - P(1,:)];
@@ -65,7 +65,8 @@ for i = 1:length(tetr)
 end
 
 %% Get A without boundary points
-boundaryPoints = [edge(:,1); edge(:,2); edge(:,3)];
+AllboundaryPoints = [edge(:,1); edge(:,2); edge(:,3)];
+boundaryPoints = unique(AllboundaryPoints);
 
 % Setting rows and cols of boundaryPoints equal to 0
 A(boundaryPoints, :) = 0;
