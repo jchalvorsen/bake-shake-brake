@@ -1,6 +1,7 @@
-function I = quadrature2d(p1 ,p2 ,p3 ,Nq ,g )
+function I = quadrature2d_modified(p1 ,p2 ,p3 ,Nq ,g )
 %QUADRATURE2D Summary of this function goes here
 %   Detailed explanation goes here
+% p1, p2, p3 have dimension 3
 
 assert(Nq ~= 2)
 
@@ -27,6 +28,17 @@ switch (Nq)
         C3 = [1/3, 1/5, 1/5, 3/5];
         rho = [-9/16, 25/48*[1, 1, 1 ]];
 end
+
+AB = p2-p1;
+AC = p3-p1;
+n = cross(AB,AC); % normal vector of plane
+
+% plane equation: ax + by + cz + d = 0
+a = n(1);
+b = n(2);
+c = n(3);
+d = -a*p1(1) - b*p1(2) - c*p1(3);
+
 % Time in area
 P = [p1', p2', p3'; 1, 1, 1];
 area = 1/2*det(P);

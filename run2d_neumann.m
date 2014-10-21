@@ -75,8 +75,8 @@ for i = 1:length(edge)
     f1 = @(x) phi1(x)*g(x(1),x(2));
     f2 = @(x) phi2(x)*g(x(1),x(2));
     
-    val1 = quadrature1D_modified(P(1,:), P(2,:), 1, f1);
-    val2 = quadrature1D_modified(P(1,:), P(2,:), 1, f2);
+    val1 = quadrature1D_modified(P(1,:), P(2,:), 4, f1);
+    val2 = quadrature1D_modified(P(1,:), P(2,:), 4, f2);
     
     % Adding to b if we are in neumann area
     b(nodes(1)) = b(nodes(1)) + val1*(p(nodes(1),2) >= 0);

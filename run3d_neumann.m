@@ -3,7 +3,7 @@ clear all
 
 addpath include
 
-N = 900;
+N = 500;
 
 [p tetr edge] = getSphere(N);
 
@@ -34,11 +34,11 @@ for i = 1:length(tetr)
     %% Getting stiffness matrix
     % Calculating area
     Q = [[1;1;1;1], P];
-    
+    vol = abs(det(Q))/6;
     
     % Constructing jacobian and solving shit
     Jac = [P(2,:) - P(1,:); P(3,:) - P(1,:); P(4,:) - P(1,:)];
-    vol = abs(det(Q))/6;
+    
     % Ak is element matrix for this element
     Ak = transpose(Jac\divpsi)*(Jac\divpsi)*vol;
     
@@ -54,10 +54,10 @@ for i = 1:length(tetr)
     
     
     % Getting values:
-    val1 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, phi1);
-    val2 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, phi2);
-    val3 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, phi3);
-    val4 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, phi4);
+    val1 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 4, phi1);
+    val2 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 4, phi2);
+    val3 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 4, phi3);
+    val4 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 4, phi4);
     
     % Putting in right place:
     b(nodes) = b(nodes) + [val1; val2; val3; val4];  
@@ -68,11 +68,46 @@ end
 AllboundaryPoints = [edge(:,1); edge(:,2); edge(:,3)];
 boundaryPoints = unique(AllboundaryPoints);
 
+
+% Splitting edge in neumann and dirichlet boundaries
+actualBP = p(boundaryPoints,:);
+
+% Might need refining
+edgeN = edge(actualBP(:,3) >= 0,:);
+edgeD = edge(actualBP(:,3) < 0,:);
+
+% Neumann boundary conditions:
+for i = 1:length(edge)
+    nodes = edge(i,:);
+    P = p(nodes,:); 
+    Q = [[1;1;1], P];
+    
+    phi1 = @(x) ([1, x(1), x(2), x(3)]*(Q\[1; 0; 0]));
+    phi2 = @(x) ([1, x(1), x(2), x(3)]*(Q\[0; 1; 0]));
+    phi3 = @(x) ([1, x(1), x(2), x(3)]*(Q\[0; 0; 1]));
+    
+    f1 = @(x) phi1(x)*g(x(1),x(2), x(3));
+    f2 = @(x) phi2(x)*g(x(1),x(2), x(3));
+    f3 = @(x) phi3(x)*g(x(1),x(2), x(3));
+    
+    val1 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f1);
+    val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f2);
+    val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f3);
+    
+    
+    % Adding to b if we are in neumann area
+    b(nodes(1)) = b(nodes(1)) + val1*(p(nodes(1),3) >= 0);
+    b(nodes(2)) = b(nodes(2)) + val2*(p(nodes(2),3) >= 0);
+    b(nodes(3)) = b(nodes(3)) + val3*(p(nodes(3),3) >= 0);
+end
+
 % Setting rows and cols of boundaryPoints equal to 0
-A(boundaryPoints, :) = 0;
-A(:, boundaryPoints) = 0;
-b(boundaryPoints) = 0;
-A(boundaryPoints, boundaryPoints) = speye(length(boundaryPoints), length(boundaryPoints));
+boundaryPointsD = edgeD(:,1);
+A(boundaryPointsD, :) = 0;
+A(:, boundaryPointsD) = 0;
+b(boundaryPointsD) = 0;
+A(boundaryPointsD, boundaryPointsD) = speye(length(boundaryPointsD), length(boundaryPointsD));
+
 
 % Solving the linear system
 u_sol = A\b;
