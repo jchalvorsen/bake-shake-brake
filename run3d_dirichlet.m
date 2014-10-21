@@ -3,11 +3,13 @@ clear all
 
 addpath include
 
-N = 900;
+N = 100;
 
-[p tri edge] = getSphere(N);
+[p tetr edge] = getSphere(N);
 
-trep = TriRep(tri, p);
+writeVTF(p, tetr, zeros(N,1), 'test.vtf')
+
+trep = TriRep(tetr, p);
 [tr, Xb] = freeBoundary(trep);
 trisurf(tr, Xb(:,1), Xb(:,2), Xb(:,3), 'FaceColor', 'red','FaceAlpha', 0.8); 
  
