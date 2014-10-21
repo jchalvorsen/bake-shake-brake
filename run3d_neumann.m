@@ -17,6 +17,7 @@ trisurf(tr, Xb(:,1), Xb(:,2), Xb(:,3), 'FaceColor', 'red','FaceAlpha', 0.8);
 % Declaring functions
 f = @(x,y,z) -12*pi*cos(2*pi*(x^2+y^2+z^2)) +16*pi^2*(x^2+y^2+z^2)*sin(2*pi*(x^2+y^2+z^2));
 u = @(x) sin(2*pi*(x(1)^2 + x(2)^2 + x(3)^2));
+g = @(x,y,z) 4*pi*sqrt(x^2+y^2+z^2) * cos(2*pi*(x^2+y^2+z^2));
 
 A = sparse(N,N);
 b = zeros(N,1);
@@ -72,7 +73,8 @@ boundaryPoints = unique(AllboundaryPoints);
 % Splitting edge in neumann and dirichlet boundaries
 actualBP = p(boundaryPoints,:);
 
-% Might need refining
+%  needs refining
+
 edgeN = edge(actualBP(:,3) >= 0,:);
 edgeD = edge(actualBP(:,3) < 0,:);
 
@@ -89,10 +91,11 @@ for i = 1:length(edge)
     f1 = @(x) phi1(x)*g(x(1),x(2), x(3));
     f2 = @(x) phi2(x)*g(x(1),x(2), x(3));
     f3 = @(x) phi3(x)*g(x(1),x(2), x(3));
+
     
-    val1 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f1);
-    val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f2);
-    val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f3);
+    val1 = quadrature2d_modified(P(1,:), P(2,:), P(3,:), 4, f1);
+    val2 = quadrature2d_modified(P(1,:), P(2,:), P(3,:), 4, f2);
+    val3 = quadrature2d_modified(P(1,:), P(2,:), P(3,:), 4, f3);
     
     
     % Adding to b if we are in neumann area
