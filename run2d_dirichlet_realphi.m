@@ -117,7 +117,7 @@ figure
 subplot(1,2,1)
 surf(z, z, U_sol)
 title('FEM solution')
-
+pause
 
 % Plotting reference solution:
 U = zeros(100);
