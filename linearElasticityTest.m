@@ -47,7 +47,7 @@ clear all
 
 addpath include
 
-N = 4;
+N = 20;
 
 [p tri edge] = getPlate(N);
 figure
@@ -57,7 +57,7 @@ N = length(p);
 
 % Declaring material constants
 E = 0.1;
-v = 0.2;
+v = 0.01;
 
 % Building the C matrix:
 C = E/(1-v^2)*[1, v, 0; v, 1, 0; 0, 0, 1-v];
@@ -88,11 +88,11 @@ for i = 1:length(tri)
     
     c = [c1, c2, c3];
     
-    for j = -1:0     % looping over x and y indexing
+    for j = 0:1     % looping over x and y indexing
         Ak = zeros(3);
         for q = 1:3
-            for w = 1:2
-                if j == -1
+            for w = 1:3
+                if j == 0
                     %e = [c2; 0; 0.5*c3];
                     e1 = [c(2,q); 0; 0.5*c(3,q)];
                     e2 = [c(2,w); 0; 0.5*c(3,w)];
@@ -102,16 +102,16 @@ for i = 1:length(tri)
                     e2 = [0; c(3,w); 0.5*c(2,w)];
                 end
                 f = e1'*C*e2;
-                Ak(q,w) = f*area;
-                
+                Ak(q,w) = Ak(q,w) + f*area;
             end
         end
         % Put element matrix in right place      
-        A(2*nodes+j,2*nodes+j) = A(2*nodes+j,2*nodes+j) + Ak;
+        
+        A(2*nodes-1+j,2*nodes-1+j) = A(2*nodes-1+j,2*nodes-1+j) + Ak;
     
         %% Getting b vector
         % Finding functions phi*f:
-        if j == -1
+        if j == 0
             f1 = @(x) ([1, x(1), x(2)]*c1)*fx(x(1),x(2));
             f2 = @(x) ([1, x(1), x(2)]*c2)*fx(x(1),x(2));
             f3 = @(x) ([1, x(1), x(2)]*c3)*fx(x(1),x(2));
@@ -125,8 +125,9 @@ for i = 1:length(tri)
         val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f2);
         val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f3);
         
+   
         % Putting in right place:
-        b(2*nodes+j) = b(2*nodes+j) + [val1; val2; val3];   
+        b(2*nodes-1+j) = b(2*nodes-1+j) + [val1; val2; val3];   
     end     
 end
 %% Get A without boundary points
@@ -137,6 +138,7 @@ A(boundaryPoints, :) = 0;
 A(:, boundaryPoints) = 0;
 b(boundaryPoints) = 0;
 A(boundaryPoints, boundaryPoints) = speye(length(boundaryPoints), length(boundaryPoints));
+
 % Solving the linear system
 u_sol = A\b;
 
@@ -174,13 +176,14 @@ for i = 1:length(tri)
             if (phi1v <= 1 && phi1v >= 0) && (phi2v <= 1 && phi2v >= 0) && (phi3v <= 1 && phi3v >= 0)
                 % Add if inside triangle
                 uu(j,k) = q*u_sol(2*nodes);
+                % Question: What about u_sol(2*nodes-1)?
             end
      
         end
     end   
     
     % merging uu into U_sol
-    xstart = find(z ==x (1));
+    xstart = find(z == x(1));
     xend = xstart + length(x) - 1;
     ystart = find(z == y(1));
     yend = ystart + length(y) - 1;
@@ -188,6 +191,7 @@ for i = 1:length(tri)
     U_sol(xstart:xend, ystart:yend) = uu + U_sol(xstart:xend, ystart:yend);
 end
  
+
 figure
 subplot(1,2,1)
 surf(z, z, U_sol)
