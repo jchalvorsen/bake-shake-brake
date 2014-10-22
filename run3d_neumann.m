@@ -3,7 +3,7 @@ clear all
 
 addpath include
 
-N = 500;
+N = 2500;
 
 [p tetr edge] = getSphere(N);
 
@@ -64,20 +64,9 @@ for i = 1:length(tetr)
     b(nodes) = b(nodes) + [val1; val2; val3; val4];  
     
 end
-
+figure
+spy(A)
 %% Get A without boundary points
-AllboundaryPoints = [edge(:,1); edge(:,2); edge(:,3)];
-boundaryPoints = unique(AllboundaryPoints);
-
-
-% Splitting edge in neumann and dirichlet boundaries
-actualBP = p(boundaryPoints,:);
-
-%  needs refining
-
-edgeN = edge(actualBP(:,3) >= 0,:);
-edgeD = edge(actualBP(:,3) < 0,:);
-
 % Neumann boundary conditions:
 for i = 1:length(edge)
     nodes = edge(i,:);
@@ -104,8 +93,12 @@ for i = 1:length(edge)
     b(nodes(3)) = b(nodes(3)) + val3*(p(nodes(3),3) >= 0);
 end
 
-% Setting rows and cols of boundaryPoints equal to 0
-boundaryPointsD = edgeD(:,1);
+% Dirichlet BCs
+
+AllboundaryPoints = [edge(:,1); edge(:,2); edge(:,3)];
+boundaryPoints = unique(AllboundaryPoints);
+actualBP = p(boundaryPoints,:);
+boundaryPointsD = boundaryPoints(actualBP(:,3) < 0);
 A(boundaryPointsD, :) = 0;
 A(:, boundaryPointsD) = 0;
 b(boundaryPointsD) = 0;
