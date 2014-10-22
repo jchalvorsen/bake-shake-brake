@@ -82,9 +82,9 @@ for i = 1:length(edge)
     f3 = @(x) phi3(x)*g(x(1),x(2), x(3));
 
     
-    val1 = quadrature2d_modified(P(1,:), P(2,:), P(3,:), 4, f1);
-    val2 = quadrature2d_modified(P(1,:), P(2,:), P(3,:), 4, f2);
-    val3 = quadrature2d_modified(P(1,:), P(2,:), P(3,:), 4, f3);
+    val1 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f1);
+    val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f2);
+    val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f3);
     
     
     % Adding to b if we are in neumann area
