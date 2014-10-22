@@ -28,8 +28,13 @@ switch (Nq)
         rho = [-9/16, 25/48*[1, 1, 1 ]];
 end
 % Time in area
-n_cross = cross(p2-p1,p3-p1); % normal vector of plane
-area = 1/2*norm(n_cross,2);
+if length(p1) >= 3
+    n_cross = cross(p2-p1,p3-p1); % normal vector of plane
+    area = 1/2*norm(n_cross,2);
+else
+    J = [ p2 - p1; p3 - p1];
+    area = 1/2*abs(det(J));
+end
 
 x = zeros(Nq,length(p1));
 partial_sums = zeros(Nq,1);
