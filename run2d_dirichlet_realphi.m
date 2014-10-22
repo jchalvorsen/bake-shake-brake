@@ -84,16 +84,16 @@ for i = 1:length(tri)
     % Finding basis function:
     Q = [[1;1;1], P];
     phi1 = @(x) [1, x(1), x(2)]*(Q\[1; 0; 0]);
-    f2 = @(x) [1, x(1), x(2)]*(Q\[0; 1; 0]);
-    f3 = @(x) [1, x(1), x(2)]*(Q\[0; 0; 1]);
+    phi2 = @(x) [1, x(1), x(2)]*(Q\[0; 1; 0]);
+    phi3 = @(x) [1, x(1), x(2)]*(Q\[0; 0; 1]);
        
     uu = zeros(length(x), length(y));
     for j = 1:length(x)
         for k = 1:length(y)
             point = [x(j), y(k)];
             phi1v = phi1(point);
-            phi2v = f2(point);
-            phi3v = f3(point);
+            phi2v = phi2(point);
+            phi3v = phi3(point);
             q = [phi1v, phi2v, phi3v];
             % Check if point is inside the triangle
             if (phi1v <= 1 && phi1v >= 0) && (phi2v <= 1 && phi2v >= 0) && (phi3v <= 1 && phi3v >= 0)

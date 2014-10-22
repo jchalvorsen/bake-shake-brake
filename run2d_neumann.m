@@ -16,39 +16,42 @@ u = @(x) sin(2*pi*(x(1)^2+x(2)^2));
 A = sparse(N,N);
 b = zeros(N,1);
 
-divpsi1 = [-1;-1];
-divpsi2 = [1; 0];
-divpsi3 = [0; 1];
-divpsi = [divpsi1, divpsi2, divpsi3];
-
 for i = 1:length(tri)
     nodes = tri(i,:);
     P = p(nodes,:);       % Active points in triangle
     
-    %% Getting stiffness matrix
     % Calculating area
     Q = [[1;1;1], P];
-    area = 0.5*abs(det(Q));
+    area = 0.5*abs(det(Q));   
     
-    % Constructing jacobian and solving shit
-    Jac = [P(2,:) - P(1,:); P(3,:) - P(1,:)];
+    %% Getting stiffness matrix
+
+    % Finding constants in phi (basis function = [1, x, y] * c)
+    c1 = Q\[1; 0; 0];
+    c2 = Q\[0; 1; 0];
+    c3 = Q\[0; 0; 1];
     
-    % Ak is element matrix for this element
-    Ak = transpose(Jac\divpsi)*(Jac\divpsi)*area;
+    divphi1 = c1(2:3);
+    divphi2 = c2(2:3);
+    divphi3 = c3(2:3);
+    divphi = [divphi1, divphi2, divphi3];
     
+    % Ak is element matrix for this element 
+    Ak = divphi'*divphi*area;
+     
     % Put element matrix in right place
     A(nodes,nodes) = A(nodes,nodes) + Ak;
     
     %% Getting b vector 
-    % Finding basis function:
-    phi1 = @(x) ([1, x(1), x(2)]*(Q\[1; 0; 0]))*f(x(1),x(2));
-    phi2 = @(x) ([1, x(1), x(2)]*(Q\[0; 1; 0]))*f(x(1),x(2));
-    phi3 = @(x) ([1, x(1), x(2)]*(Q\[0; 0; 1]))*f(x(1),x(2));
+    % Finding functions phi*f:
+    f1 = @(x) ([1, x(1), x(2)]*c1)*f(x(1),x(2));
+    f2 = @(x) ([1, x(1), x(2)]*c2)*f(x(1),x(2));
+    f3 = @(x) ([1, x(1), x(2)]*c3)*f(x(1),x(2));
     
     % Getting values:
-    val1 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, phi1);
-    val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, phi2);
-    val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, phi3);
+    val1 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f1);
+    val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f2);
+    val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f3);
     
     % Putting in right place:
     b(nodes) = b(nodes) + [val1; val2; val3];  
