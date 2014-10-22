@@ -37,7 +37,8 @@ end
 % Replace x by v(1) and y by v(y)
 v = @(t) [a(1) + t*(b(1)-a(1)), a(2) + t*(b(2)-a(2))];
 
-I = norm(b-a,2) * rho.*g(v(z));
-
+I = 0;
+for i = 1:Nq
+    I = I + norm(b-a,2) * rho(i)*g(v(z(i)));
 end
 
