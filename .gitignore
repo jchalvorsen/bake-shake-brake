@@ -112,3 +112,6 @@ sympy-plots-for-*.tex/
 # matlab temp files:
 *~
 
+# GLView files:
+*.vtf
+
