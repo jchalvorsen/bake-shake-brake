@@ -47,7 +47,7 @@ clear all
 
 addpath include
 
-N = 20;
+N = 40;
 
 [p tri edge] = getPlate(N);
 figure
@@ -92,16 +92,21 @@ for i = 1:length(tri)
         Ak = zeros(3);
         for q = 1:3
             for w = 1:3
-                if j == 0
+
                     %e = [c2; 0; 0.5*c3];
-                    e1 = [c(2,q); 0; 0.5*c(3,q)];
-                    e2 = [c(2,w); 0; 0.5*c(3,w)];
-                else
-                    %e = [0; c(3); 0.5*c(2)];
-                    e1 = [0; c(3,q); 0.5*c(2,q)];
-                    e2 = [0; c(3,w); 0.5*c(2,w)];
+                    e1x = [c(2,q); 0; 0.5*c(3,q)];
+                    e2x = [c(2,w); 0; 0.5*c(3,w)];
+
+                    %ey = [0; c(3); 0.5*c(2)];
+                    e1y = [0; c(3,q); 0.5*c(2,q)];
+                    e2y = [0; c(3,w); 0.5*c(2,w)];
+            
+                if j == 0
+                    f = e1x'*C*e2x;
+                else 
+                    f = e1y'*C*e2y;
                 end
-                f = e1'*C*e2;
+                
                 Ak(q,w) = Ak(q,w) + f*area;
             end
         end
@@ -135,7 +140,7 @@ boundaryPoints = [2*edge'-1; 2*edge'];
 
 % Setting rows and cols of boundaryPoints equal to 0
 A(boundaryPoints, :) = 0;
-A(:, boundaryPoints) = 0;
+%A(:, boundaryPoints) = 0;
 b(boundaryPoints) = 0;
 A(boundaryPoints, boundaryPoints) = speye(length(boundaryPoints), length(boundaryPoints));
 
@@ -173,9 +178,16 @@ for i = 1:length(tri)
             phi3v = phi3(point);
             q = [phi1v, phi2v, phi3v];
             % Check if point is inside the triangle
-            if (phi1v <= 1 && phi1v >= 0) && (phi2v <= 1 && phi2v >= 0) && (phi3v <= 1 && phi3v >= 0)
+            % -------------------------------------------------------------
+            % Her er vi uheldige og finner noen punkter 2 eller 0 ganger,
+            % avhengig av om vi bruker >=0 eller >0, henholdsvis:
+            % Vurder ny plottingsmetode, trisurf andbefales av studass
+            % -------------------------------------------------------------
+            if (phi1v <= 1 && phi1v > 0) && (phi2v <= 1 && phi2v > 0) && (phi3v <= 1 && phi3v > 0)
                 % Add if inside triangle
+                
                 uu(j,k) = q*u_sol(2*nodes);
+                
                 % Question: What about u_sol(2*nodes-1)?
             end
      

@@ -3,7 +3,7 @@ clear all
 
 addpath include
 
-N = 900;
+N = 30000;
 
 [p tetr edge] = getSphere(N);
 
@@ -21,11 +21,11 @@ u = @(x) sin(2*pi*(x(1)^2 + x(2)^2 + x(3)^2));
 A = sparse(N,N);
 b = zeros(N,1);
 
-divpsi1 = [-1;-1;-1];
-divpsi2 = [1; 0; 0];
-divpsi3 = [0; 1; 0];
-divpsi4 = [0; 0; 1];
-divpsi = [divpsi1, divpsi2, divpsi3, divpsi4];
+% divpsi1 = [-1;-1;-1];
+% divpsi2 = [1; 0; 0];
+% divpsi3 = [0; 1; 0];
+% divpsi4 = [0; 0; 1];
+% divpsi = [divpsi1, divpsi2, divpsi3, divpsi4];
 
 for i = 1:length(tetr)
     nodes = tetr(i,:);
@@ -77,7 +77,7 @@ boundaryPoints = unique(AllboundaryPoints);
 
 % Setting rows and cols of boundaryPoints equal to 0
 A(boundaryPoints, :) = 0;
-A(:, boundaryPoints) = 0;
+% A(:, boundaryPoints) = 0;
 b(boundaryPoints) = 0;
 A(boundaryPoints, boundaryPoints) = speye(length(boundaryPoints), length(boundaryPoints));
 

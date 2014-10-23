@@ -91,7 +91,7 @@ end
 % Dirichlet BC: Setting rows and cols of boundaryPoints equal to 0
 boundaryPointsD = edgeD(:,1);
 A(boundaryPointsD, :) = 0;
-A(:, boundaryPointsD) = 0;
+% A(:, boundaryPointsD) = 0;
 b(boundaryPointsD) = 0;
 A(boundaryPointsD, boundaryPointsD) = speye(length(boundaryPointsD), length(boundaryPointsD));
 
