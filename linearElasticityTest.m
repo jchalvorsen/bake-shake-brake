@@ -60,7 +60,7 @@ E = 1;
 v = 0.1;
 
 % Building the C matrix:
-C = E/(1-v^2)*[1, v, 0; v, 1, 0; 0, 0, 1-v];
+C = E/(1-v^2)*[1, v, 0; v, 1, 0; 0, 0, (1-v)/2];
 
 % Declaring functions
 fx = @(x,y) E/(1-v^2) * (-2*y^2 - x^2 + v*x^2 - 2*v*x*y -2*x*y + 3 - v);
@@ -80,7 +80,7 @@ for i = 1:length(tri)
     area = 0.5*abs(det(Q));
     
     
-    %% Getting stiffness matrix 
+    %% Getting stiffness matrix
     % Finding constants in phi (basis function = [1, x, y] * c)
     c1 = Q\[1; 0; 0];
     c2 = Q\[0; 1; 0];
@@ -88,35 +88,41 @@ for i = 1:length(tri)
     %c = inv(Q);
     c = [c1, c2, c3];
     
-    for j = 0:1     % looping over x and y indexing
-        Ak = zeros(3);
-        for q = 1:3
-            for w = 1:3
-                    % Basis function = c1 + c2*x + c3*y
-                    %e = [c2; 0; 0.5*c3];
-                    e1x = [c(2,q); 0; 0.5*c(3,q)];
-                    e2x = [c(2,w); 0; 0.5*c(3,w)];
-
-                    %ey = [0; c(3); 0.5*c(2)];
-                    e1y = [0; c(3,q); 0.5*c(2,q)];
-                    e2y = [0; c(3,w); 0.5*c(2,w)];
-
-                if j == 0
-                    f = e1x'*C*e2x;
-                else 
-                    f = e1y'*C*e2y;
-                end
-                
-                Ak(q,w) = Ak(q,w) + f*area;
-            end
+    % looping over x and y indexing
+    Ak = zeros(6);
+    for q = 1:3
+        for w = 1:3
+            % Basis function x = [c1 + c2*x + c3*y; 0] and y = [0; c1 + c2*x + c3*y] 
+            %e = [c2; 0; 0.5*c3];
+            e1x = [c(2,q); 0; c(3,q)];
+            e2x = [c(2,w); 0; c(3,w)];
+            
+            %ey = [0; c(3); 0.5*c(2)];
+            e1y = [0; c(3,q); c(2,q)];
+            e2y = [0; c(3,w); c(2,w)];
+            
+            
+            f11 = e1x'*C*e2x;
+            f12 = e1x'*C*e2y;
+            f21 = e1y'*C*e2x;
+            f22 = e1y'*C*e2y;
+            
+            Ak(2*q-1,2*w-1) = f11*area;
+            Ak(2*q-1,2*w) = f12*area;
+            Ak(2*q  ,2*w-1) = f21*area;
+            Ak(2*q  ,2*w) = f22*area;
         end
-        %Ak
-        % Put element matrix in right place      
-        
-        A(2*nodes-1+j,2*nodes-1+j) = A(2*nodes-1+j,2*nodes-1+j) + Ak;
-    
-        %% Getting b vector
-        % Finding functions phi*f:
+    end
+    %Ak
+    % Put element matrix in right place
+    % Map to right place:
+    map(1:2:2*length(nodes)) = 2*nodes-1;
+    map(2:2:2*length(nodes)) = 2*nodes;
+    A(map,map) = A(map,map) + Ak;
+
+    %% Getting b vector
+    % Finding functions phi*f:
+    for j = 0:1
         if j == 0
             f1 = @(x) ([1, x(1), x(2)]*c1)*fx(x(1),x(2));
             f2 = @(x) ([1, x(1), x(2)]*c2)*fx(x(1),x(2));
@@ -131,14 +137,13 @@ for i = 1:length(tri)
         val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f2);
         val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f3);
         
-   
         % Putting in right place:
-        b(2*nodes-1+j) = b(2*nodes-1+j) + [val1; val2; val3];   
-    end     
+        b(2*nodes-1+j) = b(2*nodes-1+j) + [val1; val2; val3];
+    end
 end
 %% Get A without boundary points
 boundaryPoints = [2*edge'-1; 2*edge'];
-
+figure; spy(A)
 % Setting cols of boundaryPoints equal to 0
 A(boundaryPoints, :) = 0;
 %A(:, boundaryPoints) = 0;
@@ -194,4 +199,4 @@ trisurf(tri, p(:,1), p(:,2), u_ref(1:2:end))
 figure
 trisurf(tri, p(:,1), p(:,2), u_sol(1:2:end) - u_ref(1:2:end))
 
-
+fault = norm(u_sol(1:2:end) - u_ref(1:2:end),inf)
