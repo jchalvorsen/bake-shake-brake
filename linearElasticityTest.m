@@ -143,7 +143,7 @@ for i = 1:length(tri)
 end
 %% Get A without boundary points
 boundaryPoints = [2*edge'-1; 2*edge'];
-figure; spy(A)
+
 % Setting cols of boundaryPoints equal to 0
 A(boundaryPoints, :) = 0;
 %A(:, boundaryPoints) = 0;
@@ -199,4 +199,4 @@ trisurf(tri, p(:,1), p(:,2), u_ref(1:2:end))
 figure
 trisurf(tri, p(:,1), p(:,2), u_sol(1:2:end) - u_ref(1:2:end))
 
-fault = norm(u_sol(1:2:end) - u_ref(1:2:end),inf)
+norm = norm(u_sol(1:2:end) - u_ref(1:2:end),inf)
