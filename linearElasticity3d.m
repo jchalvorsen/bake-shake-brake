@@ -85,18 +85,20 @@ for i = 1:length(tetr)
                    delz,    0, delx ]      
             %}
             
-            ex = @(i) [c(2,i); 0; 0; c(3,i); 0; c(4,i)];
-            ey = @(i) [0; c(3,i); 0; c(2,i); c(4,i); 0];
-            ez = @(i) [0; 0; c(4,i); 0; c(3,i); c(2,i)];
-            
+            ex1 = [c(2,q); 0; 0; c(3,q); 0; c(4,q)];
+            ex2 = [c(2,w); 0; 0; c(3,w); 0; c(4,w)];
+            ey1 = [0; c(3,q); 0; c(2,q); c(4,q); 0];
+            ey2 = [0; c(3,w); 0; c(2,w); c(4,w); 0];
+            ez1 = [0; 0; c(4,q); 0; c(3,q); c(2,q)];
+            ez2 = [0; 0; c(4,w); 0; c(3,w); c(2,w)];
             
             % q represents basis function #1, while w is #2         
-            f11 = ex(q)'*C*ex(w);
-            f12 = ex(q)'*C*ey(w);
-            f13 = ex(q)'*C*ez(w);
-            f22 = ey(q)'*C*ey(w);
-            f23 = ey(q)'*C*ez(w);
-            f33 = ez(q)'*C*ez(w);
+            f11 = ex1'*C*ex2;
+            f12 = ex1'*C*ey2;
+            f13 = ex1'*C*ez2;
+            f22 = ey1'*C*ey2;
+            f23 = ey1'*C*ez2;
+            f33 = ez1'*C*ez2;
             
             fk = [f11, f12, f13;
                   f12, f22, f23;
@@ -179,5 +181,6 @@ view(2),axis equal,colorbar,title('FEM solution')
 
 U = [u_sol(1:3:end), u_sol(2:3:end), u_sol(3:3:end)];
 
-
-
+% Export to glview
+writeVTF(p, tetr, u_sol(1:3:end), 'queen.vtf')
+writeVTF2(p, tetr, 'Displacement', U, 'FileName', 'queen_displacement.vtf');
