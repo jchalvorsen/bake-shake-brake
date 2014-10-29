@@ -100,9 +100,13 @@ for i = 1:length(tetr)
             f23 = ey1'*C*ez2;
             f33 = ez1'*C*ez2;
             
+            f21 = ey1'*C*ex2;
+            f31 = ez1'*C*ex2;
+            f32 = ez1'*C*ey2;
+            
             fk = [f11, f12, f13;
-                  f12, f22, f23;
-                  f13, f23, f33];
+                  f21, f22, f23;
+                  f31, f32, f33];
               
             Ak(3*q-2:3*q, 3*w-2:3*w) = fk*vol;
         end
@@ -130,19 +134,24 @@ for i = 1:length(tetr)
     val4 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, f4);
     
     % Putting in right place:
-    for j = 0:2
-        b(3*nodes-2+j) = b(3*nodes-2+j) + [val1; val2; val3; val4]*vol*-9.81;
-    end
+    % only want to add gravity compononen to z-dir
+    b(3*nodes) = b(3*nodes) + [val1; val2; val3; val4]*vol*-9.81;
+    
 
 end
+close(h)
 %% Get A without boundary points
 boundaryPoints = find((p(:,3) == 0)); % Dirichlet homogenous BC: f(boundaryPoints) = 0
 
+map2(1:3:3*length(boundaryPoints)) = 3*boundaryPoints-2;
+map2(2:3:3*length(boundaryPoints)) = 3*boundaryPoints-1;
+map2(3:3:3*length(boundaryPoints)) = 3*boundaryPoints;
+
 % Setting cols of boundaryPoints equal to 0
-A(boundaryPoints, :) = 0;
+A(map2, :) = 0;
 %A(:, boundaryPoints) = 0;
-b(boundaryPoints) = 0;
-A(boundaryPoints, boundaryPoints) = A(boundaryPoints, boundaryPoints) + speye(length(boundaryPoints), length(boundaryPoints));
+b(map2) = 0;
+A(map2, map2) = A(map2, map2) + speye(length(map2), length(map2));
 
 % Solving the linear system
 u_sol = A\b;
@@ -180,6 +189,12 @@ view(2),axis equal,colorbar,title('FEM solution')
 
 
 U = [u_sol(1:3:end), u_sol(2:3:end), u_sol(3:3:end)];
+
+
+figure
+%subplot(2,1,1)
+trisurf(tetr,p(:,1)+U(:,1),p(:,2)+U(:,2),p(:,3)+U(:,3),u_sol(1:3:end));
+view(2),axis equal,colorbar,title('FEM solution')
 
 % Export to glview
 writeVTF(p, tetr, u_sol(1:3:end), 'queen.vtf')
