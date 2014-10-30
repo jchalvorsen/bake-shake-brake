@@ -9,7 +9,8 @@ clear all
 addpath include/queen
 
 % loading blocked elements
-edges = load('coarse_bndry.m');     % tetraeders of the surface
+%edges = load('coarse_bndry.m');     % tetraeders of the surface DONT NEED
+%if no complicated BCs
 tetr = load('coarse_element.m');
 p = load('coarse_nodes.m');
 
@@ -40,7 +41,7 @@ C = inv([ C1        , zeros(3,3);
 
 density = @(x,y,z) 1;
 
-A = sparse(3*N,3*N);
+A = zeros(3*N,3*N);
 b = zeros(3*N,1);
 h = waitbar(0, 'In progress');
 for i = 1:length(tetr)
@@ -63,6 +64,7 @@ for i = 1:length(tetr)
     c4 = Q\[0; 0; 0; 1];
     %c = inv(Q);
     c = [c1, c2, c3, c4];
+    
     
     % looping over x and y indexing
     Ak = zeros(12);
@@ -93,20 +95,26 @@ for i = 1:length(tetr)
             ez2 = [0; 0; c(4,w); 0; c(3,w); c(2,w)];
             
             % q represents basis function #1, while w is #2         
-            f11 = ex1'*C*ex2;
-            f12 = ex1'*C*ey2;
-            f13 = ex1'*C*ez2;
-            f22 = ey1'*C*ey2;
-            f23 = ey1'*C*ez2;
-            f33 = ez1'*C*ez2;
+%             f11 = ex1'*C*ex2;
+%             f12 = ex1'*C*ey2;
+%             f13 = ex1'*C*ez2;
+%             f22 = ey1'*C*ey2;
+%             f23 = ey1'*C*ez2;
+%             f33 = ez1'*C*ez2;
+%             
+%             f21 = ey1'*C*ex2;
+%             f31 = ez1'*C*ex2;
+%             f32 = ez1'*C*ey2;
+
+            e1 = [ex1, ey1, ez1]';
+            e2 = [ex2, ey2, ez2];
             
-            f21 = ey1'*C*ex2;
-            f31 = ez1'*C*ex2;
-            f32 = ez1'*C*ey2;
+            fk = e1*C*e2;
             
-            fk = [f11, f12, f13;
-                  f21, f22, f23;
-                  f31, f32, f33];
+%             fk = [f11, f12, f13;
+%                   f21, f22, f23;
+%                   f31, f32, f33];
+%             abs(f21-f12)
               
             Ak(3*q-2:3*q, 3*w-2:3*w) = fk*vol;
         end
@@ -122,17 +130,27 @@ for i = 1:length(tetr)
     %% Getting b vector
     % Finding functions phi*f:
     
-    f1 = @(x) ([1, x(1), x(2), x(3)]*c1)*density(x);
-    f2 = @(x) ([1, x(1), x(2), x(3)]*c2)*density(x);
-    f3 = @(x) ([1, x(1), x(2), x(3)]*c3)*density(x);
-    f4 = @(x) ([1, x(1), x(2), x(3)]*c4)*density(x);
     
-    % Getting values:
-    val1 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, f1);
-    val2 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, f2);
-    val3 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, f3);
-    val4 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 5, f4);
+    % new try without quadratures and function handles:
+    midpoint = 1/4*ones(1,4)*P;
+    val1 = [1, midpoint]*c1*density(midpoint)*vol;
+    val2 = [1, midpoint]*c2*density(midpoint)*vol;
+    val3 = [1, midpoint]*c3*density(midpoint)*vol;
+    val4 = [1, midpoint]*c4*density(midpoint)*vol;
     
+    
+    
+%     f1 = @(x) ([1, x(1), x(2), x(3)]*c1)*density(x);
+%     f2 = @(x) ([1, x(1), x(2), x(3)]*c2)*density(x);
+%     f3 = @(x) ([1, x(1), x(2), x(3)]*c3)*density(x);
+%     f4 = @(x) ([1, x(1), x(2), x(3)]*c4)*density(x);
+%     
+%     % Getting values:
+%     val1 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 1, f1);
+%     val2 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 1, f2);
+%     val3 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 1, f3);
+%     val4 = quadrature3d(P(1,:), P(2,:), P(3,:), P(4,:), 1, f4);
+%     
     % Putting in right place:
     % only want to add gravity compononen to z-dir
     b(3*nodes) = b(3*nodes) + [val1; val2; val3; val4]*vol*-9.81;
@@ -140,6 +158,7 @@ for i = 1:length(tetr)
 
 end
 close(h)
+
 %% Get A without boundary points
 boundaryPoints = find((p(:,3) == 0)); % Dirichlet homogenous BC: f(boundaryPoints) = 0
 
@@ -153,8 +172,10 @@ A(map2, :) = 0;
 b(map2) = 0;
 A(map2, map2) = A(map2, map2) + speye(length(map2), length(map2));
 
+% Making A sparse so linear system will be solved fast 
+Asp = sparse(A);
 % Solving the linear system
-u_sol = A\b;
+u_sol = Asp\b;
 
 %% Plotting:
 % figure
