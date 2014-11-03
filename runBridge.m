@@ -197,7 +197,7 @@ for t = 1:max(size(ts));
     
 end
 
-
+%% plottting
 
 figure
 %plot(u_ref, '*-black')
@@ -207,13 +207,13 @@ title('Values in points')
 
 figure
 subplot(1,3,1)
-trisurf(tetr,p(:,1),p(:,2),p(:,3),u_sol(1:3:end));
+trisurf(tetr,p(:,1),p(:,2),p(:,3),u_sol(1:3:end,1));
 view(2),axis equal,colorbar,title('FEM solution in x dir')
 subplot(1,3,2)
-trisurf(tetr,p(:,1),p(:,2),p(:,3),u_sol(2:3:end));
+trisurf(tetr,p(:,1),p(:,2),p(:,3),u_sol(2:3:end,1));
 view(2),axis equal,colorbar,title('FEM solution in y dir')
 subplot(1,3,3)
-trisurf(tetr,p(:,1),p(:,2),p(:,3),u_sol(3:3:end));
+trisurf(tetr,p(:,1),p(:,2),p(:,3),u_sol(3:3:end,1));
 view(2),axis equal,colorbar,title('FEM solution in z dir')
 %%
 U1 = [u_sol(1:3:end,1), u_sol(2:3:end,1), u_sol(3:3:end,1)];
