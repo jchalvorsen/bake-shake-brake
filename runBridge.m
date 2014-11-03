@@ -86,7 +86,7 @@ for t = 1:max(size(ts));
     A = sparse(3*N,3*N);
     b = zeros(3*N,1);
     h = waitbar(0, 'In progress');
-    parfor i = 1:length(tetr)
+    for i = 1:length(tetr)
         if mod(i,1000) == 0
             waitbar(i/length(tetr),h, 'In progress')
         end
@@ -221,13 +221,13 @@ U1 = [u_sol(1:3:end,1), u_sol(2:3:end,1), u_sol(3:3:end,1)];
 
 
 figure
-subplot(1,2,1)
+%subplot(1,2,1)
 trisurf(tetr,p(:,1)+U1(:,1),p(:,2)+U1(:,2),p(:,3)+U1(:,3),U1(:,3));
 view(3),axis equal,colorbar,title('FEM solution')
 
-subplot(1,2,2)
-trisurf(tetr,p(:,1)+U2(:,1),p(:,2)+U2(:,2),p(:,3)+U2(:,3),U2(:,3));
-view(3),axis equal,colorbar,title('FEM solution')
+%subplot(1,2,2)
+%trisurf(tetr,p(:,1)+U2(:,1),p(:,2)+U2(:,2),p(:,3)+U2(:,3),U2(:,3));
+%view(3),axis equal,colorbar,title('FEM solution')
 %%
 % Export to glview
 writeVTF2(p, tetr, 'Displacement', U1, 'FileName', 'bridge_displacement.vtf');
