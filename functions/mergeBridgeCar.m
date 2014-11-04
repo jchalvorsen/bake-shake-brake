@@ -12,22 +12,23 @@ pts_car_new = [pts_car(:,1) - m(1), pts_car(:,2) - m(2), pts_car(:,3) - z_dir];
 
 
 % combining car and bridge mappings:
-mapping = zeros(length(pts_car_new),1);
-for i = 1:length(pts_car_new)
-    for j = 1:length(pts_b)
-        if sum(pts_car_new(i,:) == pts_b(j,:)) == 3
-            mapping(i) = j;
-        end
-    end
-end
+
+[~,IA,IB] = intersect(pts_b, pts_car_new, 'rows');
+
+% mapping = zeros(length(pts_car_new),1);
+% for i = 1:length(pts_car_new)
+%     for j = 1:length(pts_b)
+%         if sum(pts_car_new(i,:) == pts_b(j,:)) == 3
+%             mapping(i) = [j j];
+%         end
+%     end
+% end
 
 el_car2 = [el_car(:,1:8) + length(pts_b), el_car(:,9:end)];  % fixing indexing for for the new points, preserving block metadata and id
 
 % mapping back everything:
-for i = 1:length(mapping)
-    if mapping(i) > 0
-        el_car2(el_car(:,1:8) == i) = mapping(i);
-    end
+for i = 1:length(IB)
+    el_car2(el_car(:,1:8) == IB(i)) = IA(i);
 end
 
 % making new data with both car and bridge

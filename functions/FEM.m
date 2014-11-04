@@ -30,52 +30,22 @@ for i = 1:length(data)
 %     c4 = Q\[0; 0; 0; 1];
 %     c = [c1, c2, c3, c4];
     c = inv(Q);
-
-    % looping over x and y indexing, placing a 4x4 submatrix into submatrix
-    % Ak each round
+      
+    phiGrad = c(2:end,:);
+    B = zeros(6,12);
+    B([1,4,5],1:3:10) = phiGrad;
+    B([4,2,6],2:3:11) = phiGrad;
+    B([5,6,3],3:3:12) = phiGrad;
     
-    Ak = zeros(12);
-    for q = 1:4
-        for w = 1:4
-            % Basis function x = [c1 + c2*x + c3*y, c4*z; 0; 0]
-            % y = [0; c1 + c2*x + c3*y + c4*z; 0]
-            % z = [0; 0; c1 + c2*x + c3*y + c4*z]
-            %e = [c2; 0; 0.5*c3];
-            
-            %{
-             The eps have form of [-; -; -; -; -; -] (1x6)
-             and have the form:
-             eps = Du where, u (1x3),
-             D = [ delx,    0,    0;
-                   0,    dely,    0;
-                   0,       0, delz;
-                   dely, delx,    0;
-                   0,    delz, dely;
-                   delz,    0, delx ]
-            %}
-            
-            ex1 = [c(2,q); 0; 0; c(3,q); 0; c(4,q)];
-            ex2 = [c(2,w); 0; 0; c(3,w); 0; c(4,w)];
-            ey1 = [0; c(3,q); 0; c(2,q); c(4,q); 0];
-            ey2 = [0; c(3,w); 0; c(2,w); c(4,w); 0];
-            ez1 = [0; 0; c(4,q); 0; c(3,q); c(2,q)];
-            ez2 = [0; 0; c(4,w); 0; c(3,w); c(2,w)];
-            
-            e1 = [ex1, ey1, ez1]';
-            e2 = [ex2, ey2, ez2];
-            
-            fk = e1*C*e2;
-            
-            Ak(3*q-2:3*q, 3*w-2:3*w) = fk*vol;
-        end
-    end
-    %Ak
-    % Put element matetrx in right place
-    % Map to right place:
+    
+    
+    % u_e: displacement field:
     map(1:3:3*length(nodes)) = 3*nodes-2;
     map(2:3:3*length(nodes)) = 3*nodes-1;
     map(3:3:3*length(nodes)) = 3*nodes;
-    A(map,map) = A(map,map) + Ak;
+    
+    % Adding element stiffness matrix to main matrix
+    A(map,map) = A(map,map) + B'*C*B*vol ;
     
     %% Getting b vector 
     % new try without quadratures and function handles:
@@ -105,6 +75,7 @@ A(map2, map2) = A(map2, map2) + speye(length(map2), length(map2));
 
 % Removing extra elements because of double nodes:
 % finding rows equal to zero:
+% can comment this to run faster, but will get a singular matrix
 z = zeros(1,length(A));
 for i = 1:length(A)
     if isequal(A(i,:),z)

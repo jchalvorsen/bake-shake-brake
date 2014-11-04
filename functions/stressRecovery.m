@@ -26,20 +26,11 @@ for i = 1:length(tetr)
     c = inv(Q);
     
     % B: strain displacement matrix
+    phiGrad = c(2:end,:);
     B = zeros(6,12);
-    B(1,1:3:end) = c(2,:);
-    B(2,2:3:end) = c(3,:);
-    B(3,3:3:end) = c(4,:);
-    
-    B(4,1:3:end) = c(3,:);
-    B(4,2:3:end) = c(2,:);
-    
-    B(5,2:3:end) = c(4,:);
-    B(5,3:3:end) = c(3,:);
-    
-    B(6,1:3:end) = c(4,:);
-    B(6,3:3:end) = c(2,:);
-    
+    B([1,4,5],1:3:10) = phiGrad;
+    B([4,2,6],2:3:11) = phiGrad;
+    B([5,6,3],3:3:12) = phiGrad;
     
     % u_e: displacement field:
     map(1:3:3*length(nodes)) = 3*nodes-2;
