@@ -90,12 +90,12 @@ for i = 1:length(data)
     % new try without quadratures and function handles:
     midpoint = 1/4*ones(1,4)*P;
     
-    val = [1, midpoint]*c*loadVector(midpoint)*vol;
+    val = [1, midpoint]*c*loadVector(data(i,5))*vol;
     
     
     % Putting in right place:
     % only want to add gravity compononent to z-dir
-    b(3*nodes) = b(3*nodes) + val'*vol*-9.81/4; % not sure about constants
+    b(3*nodes) = b(3*nodes) + val'*vol*-9.81; % not sure about constants
     
     
 end
