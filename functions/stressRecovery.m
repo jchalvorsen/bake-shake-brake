@@ -14,18 +14,16 @@ for i = 1:length(tetr)
     P = p(nodes,:);       % Active points in tetrangle
     
     % Calculating area
-    Q = [[1;1;1;1], P];
-    %vol = abs(det(Q))/6;
-    
+    Q = [[1;1;1;1], P]; 
     
     % Getting stiffness matetrx
     % Finding constants in phi (basis function = [1, x, y, z] * c)
-    c1 = Q\[1; 0; 0; 0];
-    c2 = Q\[0; 1; 0; 0];
-    c3 = Q\[0; 0; 1; 0];
-    c4 = Q\[0; 0; 0; 1];
-    %c = inv(Q);
-    c = [c1, c2, c3, c4];
+    % c1 = Q\[1; 0; 0; 0];
+    % c2 = Q\[0; 1; 0; 0];
+    % c3 = Q\[0; 0; 1; 0];
+    % c4 = Q\[0; 0; 0; 1];
+    % c = [c1, c2, c3, c4];
+    c = inv(Q);
     
     % B: strain displacement matrix
     B = zeros(6,12);
@@ -53,8 +51,7 @@ for i = 1:length(tetr)
     % simga: stress vector for element:
     
     sigma = C*B*u_e;
-    normedElementStress(i) = normedElementStress(i) + norm(sigma,2);
-    
+    normedElementStress(i) = normedElementStress(i) + norm(sigma,2);    
 end
 
 %% Averaging out stresses for each node:
@@ -63,7 +60,5 @@ for i = 1:N
     [lines, ~] = find(tetr == i);
     normedNodeStress(i) = mean(normedElementStress(lines));
 end
-
-
 end
 

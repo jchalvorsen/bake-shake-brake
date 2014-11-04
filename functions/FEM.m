@@ -1,6 +1,5 @@
 function [ u_sol ] = FEM( p, data, E, v, loadVector)
-%FEM solve stuff vie the finite element method
-%   Detailed explanation goes here
+%FEM solve stuff via the finite element method
 
 N = length(p);
 
@@ -12,34 +11,29 @@ C = [ C1        , zeros(3,3);
     zeros(3,3), C2        ]; % pretty sure this should be inverted
 % found at www.rpi.edu/~des/3DElasticity.ppt, slide 24 (inverse function)
 
-%density = @(x) 7750 + (x(3) > 8)*500000; % kg/ m^3
-
 A = zeros(3*N,3*N);
 b = zeros(3*N,1);
-h = waitbar(0, 'In progress');
+
 for i = 1:length(data)
-    if mod(i,1000) == 0
-        waitbar(i/length(data),h, 'In progress')
-    end
     nodes = data(i,1:4);
-    P = p(nodes,:);       % Active points in tetrangle
+    P = p(nodes,:);       % Active points in tetraeder
     
     % Calculating area
     Q = [[1;1;1;1], P];
     vol = abs(det(Q))/6;
-    
-    
+     
     %% Getting stiffness matetrx
     % Finding constants in phi (basis function = [1, x, y, z] * c)
-    c1 = Q\[1; 0; 0; 0];
-    c2 = Q\[0; 1; 0; 0];
-    c3 = Q\[0; 0; 1; 0];
-    c4 = Q\[0; 0; 0; 1];
-    %c = inv(Q);
-    c = [c1, c2, c3, c4];
+%     c1 = Q\[1; 0; 0; 0];
+%     c2 = Q\[0; 1; 0; 0];
+%     c3 = Q\[0; 0; 1; 0];
+%     c4 = Q\[0; 0; 0; 1];
+%     c = [c1, c2, c3, c4];
+    c = inv(Q);
+
+    % looping over x and y indexing, placing a 4x4 submatrix into submatrix
+    % Ak each round
     
-    
-    % looping over x and y indexing
     Ak = zeros(12);
     for q = 1:4
         for w = 1:4
@@ -83,23 +77,17 @@ for i = 1:length(data)
     map(3:3:3*length(nodes)) = 3*nodes;
     A(map,map) = A(map,map) + Ak;
     
-    %% Getting b vector
-    % Finding functions phi*f:
-    
-    
+    %% Getting b vector 
     % new try without quadratures and function handles:
     midpoint = 1/4*ones(1,4)*P;
-    
     val = [1, midpoint]*c*loadVector(data(i,5))*vol;
-    
     
     % Putting in right place:
     % only want to add gravity compononent to z-dir
-    b(3*nodes) = b(3*nodes) + val'*vol*-9.81; % not sure about constants
+    b(3*nodes) = b(3*nodes) + val'*vol*-9.81;
     
     
 end
-close(h)
 
 %% Get A without boundary points
 boundaryPoints = find((p(:,3) == 0)); % Dirichlet homogenous BC: f(boundaryPoints) = 0
@@ -124,29 +112,10 @@ for i = 1:length(A)
     end    
 end
 
-% extraNodes = find(mapping ~=0) + length(pts);
-% map3(1:3:3*length(extraNodes)) = 3*extraNodes-2;
-% map3(2:3:3*length(extraNodes)) = 3*extraNodes-1;
-% map3(3:3:3*length(extraNodes)) = 3*extraNodes;
-% A(map3, map3) = eye(length(map3));
-
-
 % Making A sparse so linear system will be solved fast
 Asp = sparse(A);
 % Solving the linear system
 u_sol = Asp\b;
-
-%     % Plotting inside loop:
-%     U1 = [u_sol(1:3:end,1), u_sol(2:3:end,1), u_sol(3:3:end,1)];
-%     clf
-%     trisurf(tetr,p(:,1)+U1(:,1),p(:,2)+U1(:,2),p(:,3)+U1(:,3),U1(:,3));
-%     axis equal,colorbar,title(['FEM solution at time = ' num2str(ts(t))])
-%     view(-65 - 2*ts(t), 24);
-%     saveas(fig, ['figures/time' num2str(ts(t)) '.png']);
-%
-%
-
-
 
 end
 

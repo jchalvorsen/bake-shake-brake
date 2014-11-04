@@ -1,6 +1,6 @@
 function [ newpoints, newelements ] = mergeBridgeCar( pts_bridge, el_bridge, pts_car, el_car, y )
-%MERGEBRIDGECAR Summary of this function goes here
-%   Detailed explanation goes here
+%MERGEBRIDGECAR merges a brigde and car pts and elements
+%   This is a mess, but it works at least.
 
 % skewing bridge to start at origo:
 m = min(pts_bridge);
