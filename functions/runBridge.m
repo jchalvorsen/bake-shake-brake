@@ -19,9 +19,9 @@ load nodes_car.m
 %% constants
 E = 29e6;
 v = 0.2;
-loadVector = @(x) 7750 + (x(3) > 8)*500000;
+loadVector = @(x) 7750*(x == 1) + (x~=1)*50000;
 
-ts = 0:5:25;
+ts = 0:5:30;
 
 fig = figure;
 % loop over t:
