@@ -45,18 +45,26 @@ data2 = zeros(26592,6,M);
 for i = 1:M
     i
     %t = 25;
+    
+    
+    
     [ pts, newelements ] = mergeBridgeCar( pts_bridge, el_bridge, pts_car, el_car, ts(i) );
     data = hex2tetr(newelements);
+
+    % removing unused elements
+    [pts, data] = removeUnused(pts, data);
     
-    u_sol = FEM( pts, data, E, v, loadVector);
+    % Finding boundary points:
+    newtonBoundary = find((pts(:,3) == 0)); % Dirichlet homogenous BC at z = 0;
+    u_sol = FEM( pts, data, E, v, loadVector, newtonBoundary);
     stress = stressRecovery( pts, data(:,1:4), E, v, u_sol );
     
-    
+    n = length(stress);
     % Saving to use later
-    stress2(:,i) = stress;
-    u_sol2(:,i) = u_sol;
-    pts2(:,:,i) = pts;
-    data2(:,:,i) = data;
+    stress2(1:n,i) = stress;
+    u_sol2(1:3*n,i) = u_sol;
+    pts2(1:n,:,i) = pts;
+    data2(1:length(data),:,i) = data;
     
 end
 

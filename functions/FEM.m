@@ -1,4 +1,4 @@
-function [ u_sol ] = FEM( p, data, E, v, loadVector)
+function [ u_sol ] = FEM( p, data, E, v, loadVector, newtonBoundary)
 %FEM solve stuff via the finite element method
 
 N = length(p);
@@ -60,28 +60,15 @@ for i = 1:length(data)
 end
 
 %% Get A without boundary points
-boundaryPoints = find((p(:,3) == 0)); % Dirichlet homogenous BC: f(boundaryPoints) = 0
-
-map2(1:3:3*length(boundaryPoints)) = 3*boundaryPoints-2;
-map2(2:3:3*length(boundaryPoints)) = 3*boundaryPoints-1;
-map2(3:3:3*length(boundaryPoints)) = 3*boundaryPoints;
+map2(1:3:3*length(newtonBoundary)) = 3*newtonBoundary-2;
+map2(2:3:3*length(newtonBoundary)) = 3*newtonBoundary-1;
+map2(3:3:3*length(newtonBoundary)) = 3*newtonBoundary;
 
 % Setting cols of boundaryPoints equal to 0
 A(map2, :) = 0;
 %A(:, boundaryPoints) = 0;
 b(map2) = 0;
 A(map2, map2) = A(map2, map2) + speye(length(map2), length(map2));
-
-
-% Removing extra elements because of double nodes:
-% finding rows equal to zero:
-% can comment this to run faster, but will get a singular matrix
-z = zeros(1,length(A));
-for i = 1:length(A)
-    if isequal(A(i,:),z)
-        A(i,i) = 1;
-    end    
-end
 
 % Making A sparse so linear system will be solved fast
 Asp = sparse(A);
