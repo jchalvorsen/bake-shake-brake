@@ -11,14 +11,14 @@ u = @(x) sin(2*pi*(x(1)^2+x(2)^2));
 % 
 % N = 300;
 
-e_n = 8;
+e_n = 4;
 
 error = zeros(e_n,1);
 N_vec = zeros(e_n,1);
 
 for n = 1:e_n
     
-    N = 20*2^(n+1);
+    N = 10*(2*2)^(n+1);
 
 [p tri edge] = getDisk(N);
 
@@ -69,7 +69,6 @@ boundaryPoints = edge(:,1);
 
 % Setting rows and cols of boundaryPoints equal to 0
 A(boundaryPoints, :) = 0;
-% A(:, boundaryPoints) = 0;
 b(boundaryPoints) = 0;
 A(boundaryPoints, boundaryPoints) = speye(length(boundaryPoints), length(boundaryPoints));
 
@@ -83,12 +82,8 @@ for i = 1:length(p)
     u_ref(i) = u(point); 
 end
 
-
-
-
-
     error(n) = norm(u_ref-u_sol,2);
-    N_vec(n) = 1/N;
+    N_vec(n) = 1/sqrt(N);
     
 end
 %% Plotting:
@@ -97,7 +92,8 @@ figure
 loglog(N_vec, error, '*-r');
 title('Loglogplot of error');
 hold on
-loglog(N_vec, N_vec);
+loglog(N_vec, sqrt(N_vec));
+loglog(N_vec, N_vec, 'g');
 
 % %% Plotting error vector
 % figure; loglog(error, '-*')
