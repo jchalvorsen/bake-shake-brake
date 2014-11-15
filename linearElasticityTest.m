@@ -197,6 +197,6 @@ subplot(1,2,2)
 trisurf(tri, p(:,1), p(:,2), u_ref(1:2:end))
 
 figure
-trisurf(tri, p(:,1), p(:,2), u_sol(1:2:end) - u_ref(1:2:end))
+trisurf(tri, p(:,1), p(:,2), -(u_sol(1:2:end) - u_ref(1:2:end)))
 
 norm = norm(u_sol(1:2:end) - u_ref(1:2:end),inf)

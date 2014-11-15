@@ -5,10 +5,7 @@ clear all
 % grad(o(u)) = -f
 % with bondaries on x = -1, 1 or y = -1,1 and dirichlet homogenous BCs
 
-
-
 % declaring f functions:
-
 
 % Plotting u:
 % U = zeros(100);
@@ -47,19 +44,15 @@ clear all
 
 addpath include
 
-% N = 20;
+n_it = 4;
+error = zeros(n_it,1);
+n_vec = zeros(n_it,1);
 
-e_n = 6;
-error = zeros(e_n,1);
-N_vec = zeros(e_n,1);
-
-for n = 1:e_n
-    N = 2*2^n;
-    n
-    [p tri edge] = getPlate(N);
-    %figure
-    %triplot(tri, p(:,1), p(:,2))
+for k = 1:n_it
     
+    n = 5*2^(k);
+    
+    [p tri edge] = getPlate(n); % n: number of nodes in each spatial direction
     N = length(p);
     
     % Declaring material constants
@@ -140,9 +133,9 @@ for n = 1:e_n
                 f3 = @(x) ([1, x(1), x(2)]*c3)*fy(x(1),x(2));
             end
             % Getting values:
-            val1 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f1);
-            val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f2);
-            val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 4, f3);
+            val1 = quadrature2d(P(1,:), P(2,:), P(3,:), 1, f1);
+            val2 = quadrature2d(P(1,:), P(2,:), P(3,:), 1, f2);
+            val3 = quadrature2d(P(1,:), P(2,:), P(3,:), 1, f3);
             
             % Putting in right place:
             b(2*nodes-1+j) = b(2*nodes-1+j) + [val1; val2; val3];
@@ -153,41 +146,33 @@ for n = 1:e_n
     
     % Setting cols of boundaryPoints equal to 0
     A(boundaryPoints, :) = 0;
+    %A(:, boundaryPoints) = 0;
     b(boundaryPoints) = 0;
     A(boundaryPoints, boundaryPoints) = A(boundaryPoints, boundaryPoints) + speye(length(boundaryPoints), length(boundaryPoints));
     
     % Solving the linear system
     u_sol = A\b;
     
+    
     % Finding reference solution in points:
     u_ref = zeros(2*N,1);
     for i = 1:length(p)
         point = p(i,:);
         u_ref(2*i) = u(point);
-        u_ref(2*i-1) =u(point);
+        u_ref(2*i-1) = u(point);
     end
     
-    error(n) = norm(u_ref-u_sol,2);
-    N_vec(n) = 1/N;
+    error(k) = norm(u_ref-u_sol,Inf);
+    n_vec(k) = 1/(n);
     
 end
-%% Plotting:
 
+% Convergence plot:
 figure
-loglog(N_vec, error, '*-r');
+loglog(n_vec, error, '*-r');
 title('Loglogplot of error');
 hold on
-loglog(N_vec, N_vec);
+loglog(n_vec, n_vec, 'b');
+loglog(n_vec, n_vec.^2, 'g');
+legend('Error', '1', '2');
 
-% figure
-% plot(u_ref, '*-black')
-% hold on
-% plot(u_sol, '*-b')
-% title('Values in points')
-%
-
-
-% figure
-% trisurf(tri, p(:,1), p(:,2), u_sol(1:2:end) - u_ref(1:2:end))
-%
-% norm = norm(u_sol(1:2:end) - u_ref(1:2:end),inf)
