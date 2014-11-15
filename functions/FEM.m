@@ -48,13 +48,13 @@ for i = 1:length(data)
     A(map,map) = A(map,map) + B'*C*B*vol ;
     
     %% Getting b vector 
-    % new try without quadratures and function handles:
-    midpoint = 1/4*ones(1,4)*P;
-    val = [1, midpoint]*c*loadVector(data(i,5))*vol;
+    % doing the gauss quadrature of order 1
+    gaussQuad = loadVector(data(i,5))*vol;
     
     % Putting in right place:
     % only want to add gravity compononent to z-dir
-    b(3*nodes) = b(3*nodes) + val'*vol*-9.81;
+    force = [0; 0; -9.81]*vol*gaussQuad;
+    b(map) = b(map) + repmat(force,4,1);
     
     
 end
@@ -66,7 +66,6 @@ map2(3:3:3*length(newtonBoundary)) = 3*newtonBoundary;
 
 % Setting cols of boundaryPoints equal to 0
 A(map2, :) = 0;
-%A(:, boundaryPoints) = 0;
 b(map2) = 0;
 A(map2, map2) = A(map2, map2) + speye(length(map2), length(map2));
 
