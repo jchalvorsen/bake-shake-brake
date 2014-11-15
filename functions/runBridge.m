@@ -27,7 +27,7 @@ el_car = [elements_car(:,1:8) + 1, elements_car(:,9:end)]; % fix 0-indexing
 %% constants
 E = 29e6;
 v = 0.2;
-loadVector = @(x) 7750*(x == 1) + (x ~= 1)*100000;  % density of steel if blockid is 1, heavy else (car)
+loadVector = @(x) 7750*(x == 1) + (x ~= 1)*7750*2;  % density of steel if blockid is 1, heavy else (car)
 
 % min stepsize is 0.5 because of the placement of the points
 ts = 25;
