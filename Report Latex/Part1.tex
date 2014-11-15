@@ -1,0 +1,49 @@
+\section{Part 1}
+
+\subsection{Poisson in two dimensions}
+
+\subsubsection{Verify that $u$ is a solution}
+
+\begin{align}
+\nabla^2 u(x,y) &= -f(x,y) \\
+f(r, \theta) &= -8\pi \cos(2\pi r^2) + 16\pi^2r^2\sin(2\pi r^2)
+\end{align}
+
+\begin{equation}
+u(r,\theta) = sin(2\pi r^2)
+\end{equation}
+
+\begin{align*}
+\nabla^2 u(r,\theta) &= \frac{1}{r}\frac{\partial u}{\partial r} + \frac{\partial^2u}{\partial r^2} + \frac{1}{r^2}\frac{\partial^2 u}{\partial \theta^2} \\
+&= \left(\frac{1}{r} + \frac{\partial}{\partial r}\right) \left(4\pi r \cos(2\pi r^2)\right) + 0 \\
+& = 8\pi \cos(2\pi r^2) - 16\pi^2r^2\sin(2\pi r^2) \\
+&= -f(r,\theta)
+\end{align*}
+
+\subsubsection{Weak formulation}
+
+Multiply by a test function $v \in X$ and integrate over the domain $\Omega$
+
+\begin{align*}
+\iint\limits_{\Omega} \nabla^2 u(x,y) \, v \, \textrm{d}x \textrm{d}y &= \iint\limits_{\Omega} -f v \, \textrm{d}x \textrm{d}y \\
+\iint\limits_{\Omega} \nabla u(x,y) \, \nabla v \, \textrm{d}x \textrm{d}y - \iint\limits_{\partial\Omega} \frac{\partial u}{\partial n} \, v \, \textrm{d}s  &= \iint\limits_{\Omega} f v \, \textrm{d}x \textrm{d}y
+\end{align*}
+
+We demand the second term on the r.h.s. to be zero, so
+
+\begin{align*}
+v \in X = \{v(x,y) : v = 0 \textrm{ when } (x,y) \in \partial\Omega\textrm{ , } v \in H^1(\Omega) \},
+\end{align*}
+
+and we obtain the weak formulation
+
+\begin{align}
+a(u, v) &= l(v) \textrm{, } \, \forall v \in X \\
+\end{align}
+
+where
+
+\begin{align}
+a(u, v) &= \iint\limits_{\Omega} \nabla u(x,y) \, \nabla v \, \textrm{d}x \textrm{d}y \\
+l(v) &= \iint\limits_{\Omega} f v \, \textrm{d}x \textrm{d}y 
+\end{align}
