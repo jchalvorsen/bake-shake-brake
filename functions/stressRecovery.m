@@ -39,10 +39,15 @@ for i = 1:length(tetr)
     
     u_e = u_sol(map);
     
-    % simga: stress vector for element:
+    % s: stress vector for element:  
+    s = C*B*u_e;
     
-    sigma = C*B*u_e;
-    normedElementStress(i) = normedElementStress(i) + norm(sigma,2);    
+    
+    % calculating the von mises stress:
+    stress_sqaured = 0.5*((s(1)-s(2))^2 + (s(2)-s(3))^2 + (s(3)-s(1))^2) ...
+                   + 3*(s(4)^2 + s(5)^2 + s(6)^2);
+    
+    normedElementStress(i) = normedElementStress(i) + sqrt(stress_sqaured);   
 end
 
 %% Averaging out stresses for each node:
