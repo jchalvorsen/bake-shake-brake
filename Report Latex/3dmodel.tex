@@ -1,5 +1,5 @@
 \section{Presentation of 3D model}
-Modifying the solver to 3 dimensions, we get the relation 
+Modifying the solver to 3 dimensions, we get the same relations as in REF NOTE PART 2. The relation between stress and strain over one element is
 
 \begin{equation}
 \label{stress-strain}
@@ -26,7 +26,7 @@ where
 \epsilon_{xz} \\
 \end{bmatrix}
 \end{align*}
-and the stress-strain matrix
+and the stress-strain matrix \cite{stressMatrix}
 \begin{align*}
 \bm{C} = \frac{E}{(1+\nu)(1-2\nu)}
 \begin{bmatrix}
@@ -67,7 +67,7 @@ u_{4z}
 0 & \frac{\partial}{\partial z} & \frac{\partial}{\partial y} \\
 \end{bmatrix}
 \end{align*}
-with $\bm{\phi_i}$ being the $i^{th}$ shape functions on the current element. The shape functions are in our case linear, and $\bm{\phi_i}$ must be 1 at the $i^{th}$ node and 0 at the three other nodes. Combining \eqref{stress-strain} and \eqref{strain-displacement}, we end up with the relation between displacement and stress,
+with $\bm{\phi_i}$ being the $i^{th}$ shape function on the current element. The shape functions are in our case linear, and $\bm{\phi_i}$ must be 1 at the $i^{th}$ node and 0 at the three other nodes. Combining \eqref{stress-strain} and \eqref{strain-displacement}, we end up with the relation between displacement and stress,
 \begin{align}
 \label{stress-displacement}
 \bm{\sigma} = \bm{C} \bm{B} \bm{u}^e.
