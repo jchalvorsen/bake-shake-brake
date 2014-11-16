@@ -1,4 +1,4 @@
-\section{Presentation of 2D model}
+\section{Presentation of the 2D system}
 
 Using the finite element method, a 2D solver for the linear elasticity problem can be made. The domain $\Omega$ is divided into triangles, called elements, each with 3 nodes. Each node represents an entry in the displacement vector
 
@@ -12,7 +12,7 @@ u_y
 
 which is a measure of how much each spatial point has moved. The strain $\bm{\epsilon}$ measures how much each spatial point has deformed and the stress $\bm{\sigma}$ measures how much forces per area are acting on a spatial point. 
 
-The relations between the displacement, strain and stress are listed in REF NOTE 2, and we will not go further into it in 2D. In 3D we will go thoroughly through the relations between displacement, strain and stress. 
+The relations between the displacement, strain and stress are listed in \cite{note2}, and we will not go further into it in 2D. In 3D we will go thoroughly through the relations between displacement, strain and stress. But first, let us see if our 2D solver is correct by looking at the error when the step size decreases. 
 
 
 

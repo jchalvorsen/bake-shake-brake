@@ -1,13 +1,13 @@
-\section{Presentation of 3D model}
-Modifying the solver to 3 dimensions, we get the same relations as in REF NOTE PART 2. The relation between stress and strain over one element is
+\section{Presentation of the 3D system}
+Modifying the solver to 3D, we get the same relations as in 2D  \cite{note2}. The relation between stress and strain over one element is
 
 \begin{equation}
 \label{stress-strain}
-\bm{\sigma} = \bm{C} \, \bm{\epsilon},
+\bm{\sigma}^e = \bm{C} \, \bm{\epsilon}^e,
 \end{equation}
 where
 \begin{align*}
-\bm{\sigma} =
+\bm{\sigma}^e =
 \begin{bmatrix}
 \sigma_{xx} \\
 \sigma_{yy} \\
@@ -16,7 +16,7 @@ where
 \sigma_{yz} \\
 \sigma_{xz}
 \end{bmatrix}, \,
-\bm{\epsilon} = 
+\bm{\epsilon}^e = 
 \begin{bmatrix}
 \epsilon_{xx} \\
 \epsilon_{yy} \\
@@ -41,7 +41,7 @@ and the stress-strain matrix \cite{stressMatrix}
 $E$ is the Young's modulus which is a measure of stiffness, and $\nu$ is the Poisson's ratio describing the ratio between the compression and expansion of a material. Further the relation between strain and displacement over one element is
 \begin{align}
 \label{strain-displacement}
-\bm{\epsilon} = \bm{B} \bm{u}^e
+\bm{\epsilon}^e = \bm{B} \bm{u}^e
 \end{align}
 where $\bm{u}^e$ is the displacement field over one element with four nodes, each with three spatial displacement directions and $\bm{B}$ is the strain-displacement matrix.
 \begin{align*}
@@ -67,12 +67,23 @@ u_{4z}
 0 & \frac{\partial}{\partial z} & \frac{\partial}{\partial y} \\
 \end{bmatrix}
 \end{align*}
-with $\bm{\phi_i}$ being the $i^{th}$ shape function on the current element. The shape functions are in our case linear, and $\bm{\phi_i}$ must be 1 at the $i^{th}$ node and 0 at the three other nodes. Combining \eqref{stress-strain} and \eqref{strain-displacement}, we end up with the relation between displacement and stress,
+with 
+
+\begin{align*}
+\bm{\phi_i} = 
+\begin{bmatrix}
+\phi_{i_x} \\
+\phi_{i_y} \\
+\phi_{i_z} \\
+\end{bmatrix}
+\end{align*}
+
+being the $i^{th}$ shape function on the current element. The shape functions are in our case linear, and $\bm{\phi_i}$ must be 1 at the $i^{th}$ node and 0 at the three other nodes. Combining \eqref{stress-strain} and \eqref{strain-displacement}, we end up with the relation between displacement and stress,
 \begin{align}
 \label{stress-displacement}
-\bm{\sigma} = \bm{C} \bm{B} \bm{u}^e.
+\bm{\sigma}^e = \bm{C} \bm{B} \bm{u}^e.
 \end{align}
-This relation is later used when we know the displacement vector and want to look at the stress on each node. 
+This relation is later used when we know the displacement vector $\bm{u}^e$ from the solution of \eqref{eq:linEl} and want to look at the stress on each node. 
 
 
 
