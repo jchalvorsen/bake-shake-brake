@@ -1,0 +1,85 @@
+\section{Presentation of 3D model}
+Modifying the solver to 3 dimensions, we get the relation 
+
+\begin{equation}
+\label{stress-strain}
+\bm{\sigma} = \bm{C} \, \bm{\epsilon},
+\end{equation}
+where
+\begin{align*}
+\bm{\sigma} =
+\begin{bmatrix}
+\sigma_{xx} \\
+\sigma_{yy} \\
+\sigma_{zz} \\
+\sigma_{xy} \\
+\sigma_{yz} \\
+\sigma_{xz}
+\end{bmatrix}, \,
+\bm{\epsilon} = 
+\begin{bmatrix}
+\epsilon_{xx} \\
+\epsilon_{yy} \\
+\epsilon_{zz} \\
+\epsilon_{xy} \\
+\epsilon_{yz} \\
+\epsilon_{xz} \\
+\end{bmatrix}
+\end{align*}
+and the stress-strain matrix
+\begin{align*}
+\bm{C} = \frac{E}{(1+\nu)(1-2\nu)}
+\begin{bmatrix}
+(1-\nu) & \nu & \nu & 0 & 0 & 0 \\
+\nu & (1-\nu) & 0 & 0 & 0 & 0 \\
+\nu & \nu & (1-\nu) & 0 & 0 & 0 \\
+0 & 0 & 0 & \frac{1-2\nu}{2} & 0 & 0 \\
+0 & 0 & 0 & 0 & \frac{1-2\nu}{2} & 0 \\
+0 & 0 & 0 & 0 & 0 & \frac{1-2\nu}{2}
+\end{bmatrix}.
+\end{align*}
+$E$ is the Young's modulus which is a measure of stiffness, and $\nu$ is the Poisson's ratio describing the ratio between the compression and expansion of a material. Further the relation between strain and displacement over one element is
+\begin{align}
+\label{strain-displacement}
+\bm{\epsilon} = \bm{B} \bm{u}^e
+\end{align}
+where $\bm{u}^e$ is the displacement field over one element with four nodes, each with three spatial displacement directions and $\bm{B}$ is the strain-displacement matrix.
+\begin{align*}
+\bm{u}^e = 
+\begin{bmatrix}
+u_{1x} \\
+u_{1y} \\
+u_{1z} \\
+\vdots \\
+u_{4z}
+\end{bmatrix}, \,
+&\bm{B} = 
+\begin{bmatrix} \\
+\bar{\bm{\partial}} \bm{\phi_1} & \bar{\bm{\partial}} \bm{\phi_2} & \bar{\bm{\partial}} \bm{\phi_3} & \bar{\bm{\partial}} \bm{\phi_4} \\[1em]
+\end{bmatrix} \textrm{ and } 
+\bar{\bm{\partial}} = 
+\begin{bmatrix}
+\frac{\partial}{\partial x} & 0 & 0 \\[0.3em]
+0 & \frac{\partial}{\partial y} & 0 \\[0.3em]
+0 & 0 & \frac{\partial}{\partial z} \\[0.3em]
+\frac{\partial}{\partial y} & \frac{\partial}{\partial x} & 0 \\[0.3em]
+\frac{\partial}{\partial z} & 0 & \frac{\partial}{\partial x}\\[0.3em]
+0 & \frac{\partial}{\partial z} & \frac{\partial}{\partial y} \\
+\end{bmatrix}
+\end{align*}
+with $\bm{\phi_i}$ being the $i^{th}$ shape functions on the current element. The shape functions are in our case linear, and $\bm{\phi_i}$ must be 1 at the $i^{th}$ node and 0 at the three other nodes. Combining \eqref{stress-strain} and \eqref{strain-displacement}, we end up with the relation between displacement and stress,
+\begin{align}
+\label{stress-displacement}
+\bm{\sigma} = \bm{C} \bm{B} \bm{u}^e.
+\end{align}
+
+
+
+
+
+
+
+
+
+
+
