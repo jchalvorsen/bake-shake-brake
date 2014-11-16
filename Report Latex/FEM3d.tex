@@ -20,7 +20,7 @@ f_x, & f_y, & f_z
 Let us for simplicity assume homogeneous Dirichlet boundary conditions on $\partial \Omega_D$. Multiplying with a test function $\bm{v}$ and integrating over the domain $\Omega$, we end up with the weak formulation. 
 
 \begin{equation}
-\int_\Omega \bm{\epsilon}(\bm{v})^T \bm{C} \bm{\epsilon}(\bm{u}) \, dA = \int_\Omega \bm{v}^T \bm{f} \, dA
+\int_\Omega \bm{\epsilon}(\bm{v})^T \bm{C} \bm{\epsilon}(\bm{u}) \, d\Omega = \int_\Omega \bm{v}^T \bm{f} \, d\Omega
 \end{equation}
 
 Now, we substitute the test function by linear basis functions $\bm{v} = \bm{\phi_i}$ and skipping some details we end up with the linear system for one element,
@@ -40,7 +40,7 @@ where $V^e$ is the volume of the current element. The reason why we can skip the
 \begin{align}
 \label{eq:load-vector}
 b^e_i = 
-\int_{\Omega} \bm{\phi_i} \bm{f} \, dA 
+\int_{\Omega} \bm{\phi_i} \bm{f} \, d\Omega
 \end{align}
 
 If $\bm{f}$ is a constant in the element (typically a result of mass density) then \eqref{eq:load-vector} can be calculated exact by a 1 order Gauss quadrature, since the basis functions are linear. 
