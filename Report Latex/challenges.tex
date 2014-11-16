@@ -2,9 +2,24 @@
 
 Throughout the process, we did face some challenge. We will not present all to you, but some of the most important ones. 
 
-When making the load vector in 3 dimensions, we forgot to map load vector to the right nodes. This resulted in weird displacements, see Figure REF. 
+When making the load vector in 3 dimensions, we forgot to map load vector to the right nodes. This resulted in weird displacements, see figure \ref{fig:queens}. and took quite some time to figure out what was wrong. 
 
 
 
+
+\begin{figure}[ht]
+        \centering
+        \begin{subfigure}[b]{0.45 \textwidth}
+                \includegraphics[width=\textwidth]{queen_broken}
+                \caption{The chess queen with faulty boundary conditioners.}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{0.45 \textwidth}
+                \includegraphics[width=\textwidth]{queen_fixed}
+                \caption{The same chess queen with the correct boundary conditions.}
+        \end{subfigure}
+        \caption{We see that the queen deforms quite badly when dealing with the wrong boundary conditions. }
+        \label{fig:queens}
+\end{figure}
 
 
