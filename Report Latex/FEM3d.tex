@@ -1,0 +1,30 @@
+\section{The Finite Element Method in 3D}
+
+The linear elasticity equation \eqref{eq:linEl} can be written in matrix form as
+
+\begin{align*}
+\begin{bmatrix}
+\frac{\partial}{\partial x}, & \frac{\partial}{\partial y}, & \frac{\partial}{\partial z}
+\end{bmatrix}
+\begin{bmatrix}
+\sigma_{xx} & \sigma_{xy} & \sigma_{xz} \\
+\sigma_{xy} & \sigma_{yy} & \sigma_{yz} \\
+\sigma_{xz} & \sigma_{yz} & \sigma_{zz}
+\end{bmatrix} = -
+\begin{bmatrix}
+f_x, & f_y, & f_z 
+\end{bmatrix}.
+\end{align*}
+
+Assuming only homogeneous Dirichlet boundary conditions and multiplying with a test function 
+
+\begin{align*}
+\bm{v} = 
+\begin{bmatrix}
+v_x \\
+v_y \\
+v_z 
+\end{bmatrix},
+\end{align*}
+
+and integrating over the domain $\Omega$, 
