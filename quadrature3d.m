@@ -32,8 +32,8 @@ end
 % Time in volume to answer
 vol = abs(1/6*det([p1'-p4', p2'-p4', p3'-p4']));
 x = chi*[p1; p2; p3; p4];
-y = zeros(Nq,1);
+y = zeros(3, Nq);
 for i = 1:Nq   
-    y(i) = rho(i)*g(x(i,:));
+    y(:,i) = rho(i)*g(x(i,:));
 end
-I = vol*sum(y);
+I = vol*sum(y,2);

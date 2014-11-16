@@ -35,8 +35,8 @@ v = 0.1;
 
 C1 =  E*v/((1+v)*(1-2*v))*ones(3,3) + E/(1+v)*eye(3);
 C2 = E/(2*(1+v))*eye(3);
-C = inv([ C1        , zeros(3,3);
-      zeros(3,3), C2        ]); % pretty sure this should be inverted
+C = [ C1        , zeros(3,3);
+      zeros(3,3), C2        ]; % pretty sure this should be inverted
   % found at www.rpi.edu/~des/3DElasticity.ppt, slide 24 (inverse function)
 
 density = @(x,y,z) 1;
@@ -168,9 +168,13 @@ map2(3:3:3*length(boundaryPoints)) = 3*boundaryPoints;
 
 % Setting cols of boundaryPoints equal to 0
 A(map2, :) = 0;
-%A(:, boundaryPoints) = 0;
 b(map2) = 0;
 A(map2, map2) = A(map2, map2) + speye(length(map2), length(map2));
+
+% Use these BCs to destroy queen
+% A(boundaryPoints, :) = 0;
+% b(boundaryPoints) = 0;
+% A(boundaryPoints, boundaryPoints) = A(boundaryPoints, boundaryPoints) + speye(length(boundaryPoints), length(boundaryPoints));
 
 % Making A sparse so linear system will be solved fast 
 Asp = sparse(A);
@@ -209,13 +213,14 @@ trisurf(tetr,p(:,1),p(:,2),p(:,3),u_sol(1:3:end));
 view(2),axis equal,colorbar,title('FEM solution')
 
 
-U = [u_sol(1:3:end), u_sol(2:3:end), u_sol(3:3:end)];
+U = 200*[u_sol(1:3:end), u_sol(2:3:end), u_sol(3:3:end)];
 
 
 figure
 %subplot(2,1,1)
 trisurf(tetr,p(:,1)+U(:,1),p(:,2)+U(:,2),p(:,3)+U(:,3),u_sol(1:3:end));
-view(2),axis equal,colorbar,title('FEM solution')
+view(3),axis equal%,colorbar,title('FEM solution')
+shading interp
 
 % Export to glview
 writeVTF(p, tetr, u_sol(1:3:end), 'queen.vtf')
