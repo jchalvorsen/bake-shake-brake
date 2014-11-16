@@ -115,8 +115,6 @@ sympy-plots-for-*.tex/
 # GLView files:
 *.vtf
 
-# image files:
-*.png
 
 # div:
 *pts.m
