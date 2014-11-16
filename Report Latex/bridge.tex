@@ -7,7 +7,7 @@
 \label{fig:picBridge}
 \end{figure}
 
-For this section we ventured ahead and built ourself a bridge in minecraft as shown in figure \ref{fig:picBridge}. Importing the bridge into matlab were, apart from some tedious work, quite straight forward.
+For this section we ventured ahead and built ourself a bridge in minecraft as shown in figure \ref{fig:picBridge}. Importing the bridge into matlab were, apart from some tedious work, were quite straight forward.
 
 \subsection{Short overview of algorithm}
 Since we wanted to have some kind of time-dependency on our chosen problem, we incorporated a car driving along the bridge. This required us to manually link together the meshes for the bridge and car, and is done in the \textit{mergeBridgeCar.m} matlab function. The supplied \textit{hex2tetr.m} function is used to split our minecraft cubes into fitting tetrahedrons. We find the boundary points at $z = 0$, and pass the whole thing into \textit{FEM.m} which solves the linear elasticity problem using the finite element method further specified in REF. The function \textit{stressRecovery} recovers the nodal Von Mises stresses by averaging the element  neighbor stresses for each node. The stress is found by REF.
