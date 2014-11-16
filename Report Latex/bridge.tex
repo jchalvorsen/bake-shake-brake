@@ -31,3 +31,21 @@ Poissons ratio & 0.3 \\
 
 For this problem we chose the material of the bridge to be oak wood. We defined the dimension of one minecraft block to be a cubic meter. The material constants we needed for wood were the averaged values we found at \cite{oak} and the value for the poissons ratio was conveniently set to 0.3. All the material constants are presented in table \ref{tab:oak}. We really wanted to see what happens when a heavy car drives over the bridge we defined the car to be extremely heavy.
 
+
+
+
+\begin{figure}[ht]
+        \centering
+        \begin{subfigure}[b]{0.45 \textwidth}
+                \includegraphics[width=\textwidth]{time080}
+                \caption{The car after 8 seconds have passed.}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{0.45 \textwidth}
+                \includegraphics[width=\textwidth]{time230}
+                \caption{The car after 28 seconds have passed.}
+        \end{subfigure}
+        \caption{The (really) heavy car driving over the bridge at 1 m/s. The Von Mises stress is plotted as the varying color. If the Von Mises stress is higher than the material yield, it is painted as black (and the bridge will be permanently deformed). We see that at time = 28 that the bridge have been severely damaged. }
+        \label{fig:bridget8t23}
+\end{figure}
+
