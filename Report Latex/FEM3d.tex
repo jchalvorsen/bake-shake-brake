@@ -1,4 +1,5 @@
 \section{The Finite Element Method in 3D}
+\label{sec:FEM}
 
 The linear elasticity equation \eqref{eq:linEl} can be written in matrix form as
 
@@ -22,27 +23,27 @@ Let us for simplicity assume homogeneous Dirichlet boundary conditions on $\part
 \int_\Omega \bm{\epsilon}(\bm{v})^T \bm{C} \bm{\epsilon}(\bm{u}) \, dA = \int_\Omega \bm{v}^T \bm{f} \, dA
 \end{equation}
 
-Now, we substitute the test function by linear basis functions $\bm{v} = \bm{\phi}$ and skipping some details we end up with the linear system for one element,
+Now, we substitute the test function by linear basis functions $\bm{v} = \bm{\phi_i}$ and skipping some details we end up with the linear system for one element,
 
 \begin{equation}
 \label{eq:linear-system}
-\bm{A^e} \bm{u^e} = \bm{b^e}.
+\bm{A}^e \bm{u}^e = \bm{b}^e.
 \end{equation}
 
-The stiffness element matrix is
+$\bm{A}^e$ is the stiffness element matrix,
 
 \begin{align}
-\bm{A^e} = \int_\Omega \bm{B}^T \bm{C} \bm{B} \, d\Omega = \bm{B}^T \bm{C} \bm{B} \cdot V^e
+\bm{A}^e = \int_\Omega \bm{B}^T \bm{C} \bm{B} \, d\Omega = \bm{B}^T \bm{C} \bm{B} \cdot V^e
 \end{align}
-where $V^e$ is the volume of the current element. The load vector is
+where $V^e$ is the volume of the current element. The reason why we can skip the integral is because the integrand is constant. $\bm{b}^e$ is the element load vector with the $i^{th}$ element being 
 
 \begin{align}
 \label{eq:load-vector}
-\bm{b^e}_i = 
+b^e_i = 
 \int_{\Omega} \bm{\phi_i} \bm{f} \, dA 
 \end{align}
 
-If $\bm{f}$ is a constant in the element (typically a result of mass density) then \eqref{eq:load-vector} can be calculated exact by Gauss quadrature of order 1, since the basis functions are linear. 
+If $\bm{f}$ is a constant in the element (typically a result of mass density) then \eqref{eq:load-vector} can be calculated exact by a 1 order Gauss quadrature, since the basis functions are linear. 
 
 We have now presented a linear system for one element. Iterating over all elements, and mapping to a stiffness matrix $\bm{A}$ and load vector $\bm{b}$, we obtain a linear system for all the nodes in our geometry. 
 
