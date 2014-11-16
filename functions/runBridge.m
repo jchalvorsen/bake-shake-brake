@@ -27,7 +27,7 @@ el_car = [elements_car(:,1:8) + 1, elements_car(:,9:end)]; % fix 0-indexing
 %% constants
 maxStress = 46e6;
 E = 11e9;
-v = 0.033;
+v = 0.3;
 loadVector = @(x) 650*(x == 1) + (x ~= 1)*7750*600;  % density of steel if blockid is 1, heavy else (car)
 
 % min stepsize is 0.5 because of the placement of the points
