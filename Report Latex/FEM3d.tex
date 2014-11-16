@@ -16,15 +16,30 @@ f_x, & f_y, & f_z
 \end{bmatrix}.
 \end{align*}
 
-Assuming only homogeneous Dirichlet boundary conditions and multiplying with a test function 
+Let us for simplicity assume homogeneous Dirichlet boundary conditions on $\partial \Omega_D$. Multiplying with a test function $\bm{v}$ and integrating over the domain $\Omega$, we end up with the weak formulation. 
 
-\begin{align*}
-\bm{v} = 
-\begin{bmatrix}
-v_x \\
-v_y \\
-v_z 
-\end{bmatrix},
-\end{align*}
+\begin{equation}
+\int_\Omega \bm{\epsilon}(\bm{v})^T \bm{C} \bm{\epsilon}(\bm{u}) \, dA = \int_\Omega \bm{v}^T \bm{f} \, dA
+\end{equation}
 
-and integrating over the domain $\Omega$, 
+Now, we substitute the test function by linear basis functions $\bm{v} = \bm{\phi}$ and skipping some details we end up with the linear system for one element,
+
+\begin{equation}
+\label{eq:linear-system}
+\bm{A^e} \bm{u^e} = \bm{b^e}.
+\end{equation}
+
+The stiffness element matrix is
+
+\begin{align}
+\bm{A^e} = \int_\Omega \bm{B}^T \bm{C} \bm{B} \, d\Omega = \bm{B}^T \bm{C} \bm{B} \cdot V^e
+\end{align}
+where $V^e$ is the volume of the current element. The load vector is
+
+\begin{align}
+\label{eq:load-vector}
+\bm{b^e}_i = 
+\int_{\Omega} \bm{\phi_i} \bm{f} \, dA 
+\end{align}
+
+If $\bm{f}$ is a constant in the element (typically a result of mass density) then \eqref{eq:load-vector} can be calculated exact by Gauss quadrature of order 1, since the basis function is linear. 
