@@ -25,9 +25,10 @@ el_car = [elements_car(:,1:8) + 1, elements_car(:,9:end)]; % fix 0-indexing
 
 
 %% constants
-E = 29e6;
-v = 0.2;
-loadVector = @(x) 7750*(x == 1) + (x ~= 1)*7750*2;  % density of steel if blockid is 1, heavy else (car)
+maxStress = 46e6;
+E = 11e9;
+v = 0.033;
+loadVector = @(x) 650*(x == 1) + (x ~= 1)*7750*600;  % density of steel if blockid is 1, heavy else (car)
 
 % min stepsize is 0.5 because of the placement of the points
 ts = 25;
@@ -44,10 +45,7 @@ data2 = zeros(26592,6,M);
 %% running parallell loop
 for i = 1:M
     i
-    %t = 25;
-    
-    
-    
+
     [ pts, newelements ] = mergeBridgeCar( pts_bridge, el_bridge, pts_car, el_car, ts(i) );
     data = hex2tetr(newelements);
 
@@ -71,7 +69,9 @@ end
 %% plotting loop:
 fig = figure;
 %set(fig, 'Visible','off')
-colormap(jet)
+cmap = colormap(jet);
+cmap(end,:) = [0,0,0];
+colormap(cmap);
 for i = 1:M
     U = [u_sol2(1:3:end,i), u_sol2(2:3:end,i), u_sol2(3:3:end,i)];
     clf
@@ -80,7 +80,7 @@ for i = 1:M
     axis equal, colorbar%title(['FEM solution at time = ' num2str(ts(i))])
     view(-65 - 2*ts(i), 24)
     shading interp
-    set(gca,'clim',[0 5e5])  % setting color gradient
+    set(gca,'clim',[0 maxStress])  % setting color gradient
     axis off
     saveas(fig, sprintf('../figures/time%03d.png',10*ts(i)));
     
