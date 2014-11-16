@@ -42,4 +42,12 @@ where $V^e$ is the volume of the current element. The load vector is
 \int_{\Omega} \bm{\phi_i} \bm{f} \, dA 
 \end{align}
 
-If $\bm{f}$ is a constant in the element (typically a result of mass density) then \eqref{eq:load-vector} can be calculated exact by Gauss quadrature of order 1, since the basis function is linear. 
+If $\bm{f}$ is a constant in the element (typically a result of mass density) then \eqref{eq:load-vector} can be calculated exact by Gauss quadrature of order 1, since the basis functions are linear. 
+
+We have now presented a linear system for one element. Iterating over all elements, and mapping to a stiffness matrix $\bm{A}$ and load vector $\bm{b}$, we obtain a linear system for all the nodes in our geometry. 
+
+\begin{equation}
+\bm{A} \bm{u} = \bm{b}
+\end{equation}
+
+with $\bm{u}$ being the displacement vector for all the nodes in our system. 
