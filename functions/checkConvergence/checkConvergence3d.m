@@ -5,7 +5,6 @@ clear all
 E = 29e6;
 v = 0.2;
 
-
 % declaring load and analytical function
 Q = @(x) x^2-1;
 u = @(x, y, z) Q(x)*Q(y)*Q(z);
@@ -19,8 +18,6 @@ error = zeros(length(Ns),1);
 for ii = 1:length(Ns);
     N = Ns(ii)
     p = zeros(N,3);
-    p(1,:) = [0,0,0];
-    
     
     % getting the triangulation
     edge = [];
@@ -38,46 +35,37 @@ for ii = 1:length(Ns);
         end
     end
     
-    quad  = delaunay(p(:,1), p(:,2), p(:,3));
+    quad  = delaunay(p(:,1), p(:,2), p(:,3));   
     
-    
-    
-    
-    %% solving
-    
+    %% solving   
     u_sol = FEM( p, quad, E, v, loadfunction, edge);
     
-    
-    
-    %% plotting
-    %trisurf(quad,p(:,1), p(:,2), p(:,3), u_sol(1:3:end));
-    %colorbar
-    
-    % fixing analytical solution:
-    
+    %% fixing analytical solution and calculating error
     u_e = zeros(3*length(p),1);
     for i = 1:length(p)
         u_e(3*i-2:3*i) = u(p(i,1), p(i,2), p(i,3));
     end
-    error(ii) = norm(u_sol-u_e,'inf');
-    
-    % figure
-    % subplot(2,1,1)
-    % plot(u_sol,'*-b');
-    % subplot(2,1,2)
-    % plot(u_e, '*-r');
-    %
-    %
-    % figure
-    % plot(u_sol - u_e,'-*')
-    
-    
-    
+    error(ii) = norm(u_sol-u_e,'inf'); 
 end
 %%
+
+figure % plot solution
+subplot(1,2,1)
+trisurf(quad,p(:,1) + u_sol(1:3:end), p(:,2) + u_sol(2:3:end), p(:,3) + u_sol(3:3:end));
+view(-0.5, 34)
+subplot(1,2,2)
+trisurf(quad,p(:,1) + u_e(1:3:end), p(:,2) + u_e(2:3:end), p(:,3) + u_e(3:3:end));
+view(-0.5, 34)
+
+% plot error
 figure
 loglog(1./Ns, error, '*-r');
 title('Loglogplot of error');
 hold on
 loglog(1./Ns, 1./Ns);
+grid on
+legend('Error', 'Order 1')
+xlabel('step size')
+
+
 
