@@ -1,5 +1,12 @@
-\section{Stress}
+\section{Stress recovery}
 
-The code has so far only calculated the displacement in the geometry. The stress $\bm{\sigma}$, which measures how much forces per area are acting on a particular spatial point, is very interesting when it comes to how much a solid object can 
+The code has so far only calculated the displacement in the geometry. The stress $\bm{\sigma}$, which measures how much forces per area are acting on a particular spatial point, is very interesting when it comes to how much an object can withstand. To do a stress recovery we loop over all elements and using the relation \eqref{stress-displacement} we get the element stress vector for each element.
+
+Of special interest is the Von Mises stress \cite{VonMises}, a scalar representation of the stress, since this can be directly compared to the materials yield strength to look for permanent displacement. The Von Mises stress is calculated as 
+
+\begin{align*}
+\sigma_{v} = \sqrt{ \frac{1}{2} \left[  (\sigma_{xx} -\sigma_{yy})^2 + (\sigma_{yy} -\sigma_{zz})^2 + (\sigma_{zz} -\sigma_{xx})^2 + 6\left(\sigma_{xy}^2 + \sigma_{yz}^2 + \sigma_{xz}^2 \right) \right]}.
+\end{align*}
 
 
+The Von Mises stress is saved for every element, and to get the nodal stress we average the neighboring elements. If the nodal stresses are larger then the material yield strength we'll get a permanent deformation.
