@@ -50,7 +50,8 @@ for i = 1:length(data)
     %% Getting b vector 
     % new try without quadratures and function handles:
     midpoint = 1/4*ones(1,4)*P;
-    gaussQuad = loadVector(midpoint(1), midpoint(2), midpoint(3))*vol;    % value in center times area, first guass quad
+    %gaussQuad = quadrature3d(P(1,:) ,P(2,:) ,P(3,:), P(4,:), 4 ,loadVector )
+    gaussQuad = loadVector(midpoint)*vol;    % value in center times area, first guass quad
     
     % Putting in right place:
     b(map) = b(map) + repmat(gaussQuad,4,1);

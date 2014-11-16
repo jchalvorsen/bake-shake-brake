@@ -1,6 +1,9 @@
 close all
 clear all
 
+% add quadratures:
+addpath ../../
+
 % using material constants for steel
 E = 29e6;
 v = 0.2;
@@ -12,6 +15,7 @@ loadfunction = @(x, y, z)  E*v/((1+v)*(1-2*v)) ...
     *[ -2*Q(y)*Q(z) + (2*v-1)*Q(x)*(Q(y)+Q(z)) - 2*x*(y*Q(z)+z*Q(y));
     -2*Q(x)*Q(z) + (2*v-1)*Q(y)*(Q(x)+Q(z)) - 2*y*(x*Q(z)+z*Q(x));
     -2*Q(x)*Q(y) + (2*v-1)*Q(z)*(Q(x)+Q(y)) - 2*z*(x*Q(y)+y*Q(x))];
+l = @(x) loadfunction(x(1), x(2), x(3));
 
 Ns = 4:2:16;
 error = zeros(length(Ns),1);
@@ -38,7 +42,7 @@ for ii = 1:length(Ns);
     quad  = delaunay(p(:,1), p(:,2), p(:,3));   
     
     %% solving   
-    u_sol = FEM( p, quad, E, v, loadfunction, edge);
+    u_sol = FEM( p, quad, E, v, l, edge);
     
     %% fixing analytical solution and calculating error
     u_e = zeros(3*length(p),1);
@@ -67,5 +71,9 @@ grid on
 legend('Error', 'Order 1')
 xlabel('step size')
 
+% figure
+% plot(u_sol);
+% figure
+% plot(u_e);
 
 
