@@ -7,7 +7,7 @@ clear all
 
 addpath include
 
-n_it = 4;
+n_it = 3;
 error = zeros(n_it,1);
 n_vec = zeros(n_it,1);
 
@@ -129,7 +129,7 @@ for k = 1:n_it
     
 end
 
-% Convergence plot:
+%% Convergence plot:
 figure
 loglog(n_vec, error, '*-r');
 title('Loglogplot of error in 2D');
@@ -137,4 +137,14 @@ hold on
 loglog(n_vec, n_vec, 'b');
 loglog(n_vec, n_vec.^2, 'g');
 legend('Error', '1', '2');
+
+U_sol = sqrt(u_sol(1:2:end).^2 + u_sol(2:2:end).^2);
+U_ref = sqrt(u_ref(1:2:end).^2 + u_ref(2:2:end).^2);
+
+figure
+trisurf(tri, p(:,1), p(:,2), U_sol)
+figure
+trisurf(tri, p(:,1), p(:,2), U_ref)
+figure
+trisurf(tri, p(:,1), p(:,2), U_sol - U_ref)
 
