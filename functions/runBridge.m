@@ -1,7 +1,7 @@
 clear all
 close all
 
-
+tic
 addpath ../minecraft
 
 %% loading
@@ -41,7 +41,7 @@ M = length(ts);
 u_sol2 = zeros(3*N,M);
 stress2 = zeros(N,M);
 pts2 = zeros(N,3,M);
-data2 = zeros(26592,6,M);
+data2 = zeros(N*8,6,M);
 %% running parallell loop
 for i = 1:M
     i
@@ -65,7 +65,7 @@ for i = 1:M
     data2(1:length(data),:,i) = data;
     
 end
-
+toc
 %% plotting loop:
 fig = figure;
 %set(fig, 'Visible','off')
