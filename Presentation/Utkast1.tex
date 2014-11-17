@@ -2,6 +2,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
 \usepackage{amsmath}
+\usepackage{bm}
 
 
 
@@ -268,5 +269,107 @@ $
 
 
 % Car: 120 900 tonn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}
+Queen - how to fix?
+\begin{columns}   
+    \begin{column}{.5\linewidth}
+        \begin{figure}
+  		\includegraphics[scale=0.45]{figures/queen_broken}
+  		\end{figure}
+    \end{column}   
+    \begin{column}{.5\linewidth}
+
+        \begin{figure}
+  		\includegraphics[scale=0.45]{figures/queen_fixed}
+  		\end{figure}
+    \end{column}
+  \end{columns}
+Remember correct boundary conditions!
+\end{frame}
+
+\begin{frame}
+Convergence analysis in 3D \\
+
+\tiny
+We solve the problem
+\begin{align*}
+f_x = &K^* \left[-2(y^2-1)(z^2-1) + (2 \nu -1)(x^2-1)(z^2 +y^2-2) \right.\nonumber\\
+ &\left. -2x(y(z^2-1) + z(y^2-1)) \right] \\
+ f_y = &K^* \left[-2(x^2-1)(z^2-1) + (2 \nu -1)(y^2-1)(z^2 +x^2-2) \right.\nonumber\\
+ &\left. -2y(x(z^2-1) + z(x^2-1)) \right] \\
+ f_z = &K^* \left[-2(x^2-1)(y^2-1) + (2 \nu -1)(z^2-1)(y^2 +x^2-2) \right.\nonumber\\
+ &\left. -2z(x(y^2-1) + y(x^2-1)) \right] \\
+ K^* = & \frac{E \nu}{(1+\nu)(1-2\nu)},
+\end{align*}
+with the solution
+\begin{align*}
+\bm{u} = \begin{bmatrix}
+\, (x^2-1)(y^2-1)(z^2-1) \, \\
+\, (x^2-1)(y^2-1)(z^2-1) \, \\
+(x^2-1)(y^2-1)(z^2-1)
+\end{bmatrix}.
+\end{align*}
+\end{frame}
+
+\begin{frame}
+Convergence in 3D
+\begin{figure}
+  		\includegraphics[scale=0.45]{figures/convergence3d}
+\end{figure}
+We get linear convergence
+\end{frame}
+
+\begin{frame}
+Finally, a bridge!
+\begin{figure}
+  		\includegraphics[width=0.8\textwidth]{figures/pic_bridge}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+The bridge is solved for displacement and Von Mises stress.
+\begin{figure}
+  		\includegraphics[width=\textwidth]{figures/onlyBridge}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+The bridge is solved with a car driving across it
+\begin{columns}   
+    \begin{column}{.5\linewidth}
+        \begin{figure}
+  		\includegraphics[width=\textwidth]{figures/time080}
+  		\end{figure}
+    \end{column}   
+    \begin{column}{.5\linewidth}
+        \begin{figure}
+  		\includegraphics[width=\textwidth]{figures/time230}
+  		\end{figure}
+    \end{column}
+  \end{columns}
+Black values signalize that the Von Mises stress is larger than the yield strength.
+\end{frame}
+
+
 
 \end{document}
