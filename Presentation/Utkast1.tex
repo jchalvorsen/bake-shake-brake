@@ -1,0 +1,58 @@
+\documentclass[screen]{beamer}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+
+
+
+% Bruk NTNU-temaet for beamer (her i bokmålvariant), alternativer er
+% ntnunynorsk og ntnuenglish.
+\usetheme{ntnuenglish}
+ 
+% Angi tittelen, vi gir også en kortere variant som brukes nederst på
+% hver slide:
+\title[The Finite Element Method]%
+{Bake, Shake or Break: \\Breaking a wooden bridge}
+
+% Denne kan du også bruke hvis det passer seg:
+%\subtitle{Valgfri undertittel}
+
+% Angir foredragsholder, også en (valgfri) kortversjon i
+% hakeparanteser først som kommer nederst på hver slide:
+\author[Halvorsen \& Hasund]{Halvorsen \& Hasund}
+
+% Institusjon. Bruk gjerne disse slik det passer best med det du vil
+% ha.  Valgfri kortversjon her også
+\institute[NTNU]{The Finite Element Method project}
+
+% Datoen blir også trykket på forsida. 
+\date{16. November 2014}
+%\date{} % Bruk denne hvis du ikke vil ha noe dato på forsida.
+
+% Fra her av begynner selve dokumentet
+\begin{document}
+\setbeamertemplate{itemize items}[circle]
+
+% Siden NTNU-malen har en annen bakgrunn på forsida, må dette gjøres
+% i en egen kommando, ikke på vanlig beamer-måte:
+\ntnutitlepage
+
+% Her begynner første slide/frame, (nummer to etter forsida). 
+
+
+\begin{frame}
+\begin{columns}
+    \begin{column}{\linewidth}
+      \begin{block}{Modelling equations}
+         \begin{align*}
+         \frac{dc}{dt} &= \kappa \nabla^2 c \\
+           \frac{dc}{dt} &= -k_1 c P^R + k_2 (1-P^R) \\
+           \frac{dP^R}{dt} &=  -k_1 c P^R + k_2 (1-P^R)
+         \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\end{document}
