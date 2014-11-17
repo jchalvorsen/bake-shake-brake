@@ -1,6 +1,6 @@
 function [ normedNodeStress ] = stressRecovery( p, tetr, E, v, u_sol)
-%STRESSRECOVERY Summary of this function goes here
-%   Detailed explanation goes here
+%STRESSRECOVERY Recovers Von Mises stress from a set of displacements
+%   Returns Von Mises stress
 
 N = length(p);
 C1 =  E*v/((1+v)*(1-2*v))*ones(3,3) + E/(1+v)*eye(3);
