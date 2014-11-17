@@ -5,8 +5,6 @@ Throughout the process, we did face some challenges. We will not present all to 
 When making the load vector in 3 dimensions, we forgot to map load vector to the right nodes. This resulted in weird displacements, see figure \ref{fig:queens}. and took quite some time to figure out what was wrong. 
 
 
-
-
 \begin{figure}[ht]
         \centering
         \begin{subfigure}[b]{0.45 \textwidth}
@@ -23,3 +21,4 @@ When making the load vector in 3 dimensions, we forgot to map load vector to the
 \end{figure}
 
 
+Also, the matrix \eqref{eq:C} is only valid for an isotropic media, and is thus not valid for wood. Realizing this a little to late, we conclude that the exact same analysis we did could be done with steel, which is isotropic. We also encountered a lot of computational challenges, and some of the improvements can be read about in section \ref{sec:comp}.
