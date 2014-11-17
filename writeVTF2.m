@@ -1,6 +1,5 @@
 function writeVTF2(p, tetr, varargin),
 % function writeVTF2(p, tetr, <name>, value, <name>, value, ...),
-%
 % description:
 %    writes 3d volumetric data to Ceetron GLview native format (.vtf)
 %
@@ -67,8 +66,7 @@ function writeVTF2(p, tetr, varargin),
 %
 
 % author: Kjetil A. Johannessen
-% modified by: Geir Bogfjellmo
-% last edit: November 2014
+% last edit: November 2012
 
 filename = '';
 timeSteps     = [];
@@ -125,7 +123,7 @@ for i=1:2:numel(varargin),
 	n = size(u);
 
 	if(numel(n) > 2)  % time vector field
-		for j=1:n(3),
+		for j=1:n(2),
 			fprintf(fid, '*RESULTS %d \n', res_id);
 			fprintf(fid, '%%NO_ID \n');
 			fprintf(fid, '%%DIMENSION 3 \n');
@@ -183,9 +181,9 @@ for i=1:2:numel(varargin),
 	n = size(u);
 
 	if(numel(n) > 2)  % time vector field
-		fprintf(fid, '*GLVIEWVECTOR %d\n', i);
+		fprintf(fid, '*GLVIEWVECTOR 1\n');
 		fprintf(fid, '%%NAME "%s"\n', varargin{i});
-		for j=1:n(3),
+		for j=1:n(2),
 			fprintf(fid, '%%STEP %d\n', j);
 			fprintf(fid, '%%STEPNAME %d\n', timeSteps(j));
 			fprintf(fid, '%d \n', res_id);
@@ -193,7 +191,7 @@ for i=1:2:numel(varargin),
 		end
 		fprintf(fid, '\n');
 	elseif(n(2) > 3) % time scalar field
-		fprintf(fid, '*GLVIEWVECTOR %d\n', i);
+		fprintf(fid, '*GLVIEWSCALAR 1\n');
 		fprintf(fid, '%%NAME "%s"\n', varargin{i});
 		for j=1:n(2),
 			fprintf(fid, '%%STEP %d\n', j);
@@ -203,14 +201,14 @@ for i=1:2:numel(varargin),
 		end
 		fprintf(fid, '\n');
 	elseif(n(2) == 3) % vector field
-		fprintf(fid, '*GLVIEWVECTOR %d\n', i);
+		fprintf(fid, '*GLVIEWVECTOR 1\n');
 		fprintf(fid, '%%NAME "%s"\n', varargin{i});
 		fprintf(fid, '%%STEP 1\n');
 		fprintf(fid, '%d \n', res_id);
 		fprintf(fid, '\n');
 		res_id = res_id + 1;
 	elseif(n(2) == 1) % scalar field
-		fprintf(fid, '*GLVIEWVECTOR %d\n', i);
+		fprintf(fid, '*GLVIEWSCALAR 1\n');
 		fprintf(fid, '%%NAME "%s"\n', varargin{i});
 		fprintf(fid, '%%STEP 1\n');
 		fprintf(fid, '%d \n', res_id);
