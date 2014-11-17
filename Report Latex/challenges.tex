@@ -1,11 +1,5 @@
 \section{Challenges}
-
-Throughout the process, we did face some challenges. We will not present all to you, but some of the most important ones. 
-
-When making the load vector in 3 dimensions, we forgot to map load vector to the right nodes. This resulted in weird displacements, see Figure \ref{fig:queens}, and took quite some time to figure out what was wrong. 
-
-
-
+Throughout the process, we did face some challenges. We will here present some of the most important ones. When making the load vector in 3 dimensions, we forgot to map load vector to the right nodes. This resulted in weird displacements, see Figure \ref{fig:queens}, and took quite some time to figure out what was wrong. 
 \begin{figure}[ht]
         \centering
         \begin{subfigure}[b]{0.45 \textwidth}
@@ -20,6 +14,4 @@ When making the load vector in 3 dimensions, we forgot to map load vector to the
         \caption{We see that the queen deforms quite badly when dealing with the wrong boundary conditions. }
         \label{fig:queens}
 \end{figure}
-
-
-Also, the matrix \eqref{eq:C} is only valid for an isotropic media, and is thus not valid for wood. Realizing this a little to late, we conclude that the exact same analysis we did could be done with steel, which is isotropic. We also encountered a lot of computational challenges, and some of the improvements can be read about in Section \ref{sec:comp}.
+Also, the matrix \eqref{eq:C} is only valid for an isotropic media, and is thus not valid for wood. Realizing this a little too late, we conclude that the exact same analysis could have been done with steel, which is isotropic. We also encountered a lot of computational challenges. We tried to run our algorithm on the Sydney Harbour bridge, see Figure \ref{fig:picBridge}, but $N = 274.461$ nodes was too large, and matlab ran out of memory. 
