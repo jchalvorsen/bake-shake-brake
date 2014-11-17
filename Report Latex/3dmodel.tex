@@ -1,5 +1,5 @@
 \section{Presentation of the 3D system}
-Modifying the solver to 3D, we get the same relations as in 2D  \cite{note2}. The relation between stress and strain over one element is
+Modifying the solver to 3D, the elements are now tetrahedrons with four nodes. The relation between stress and strain over one element is
 
 \begin{equation}
 \label{stress-strain}
@@ -44,7 +44,7 @@ $E$ is the Young's modulus which is a measure of stiffness, and $\nu$ is the Poi
 \label{strain-displacement}
 \bm{\epsilon}^e = \bm{B} \bm{u}^e
 \end{align}
-where $\bm{u}^e$ is the displacement field over one element with four nodes, each with three spatial displacement directions and $\bm{B}$ is the strain-displacement matrix \cite{ch14}.
+where $\bm{u}^e$ is the displacement field over one element with four nodes, each with three spatial displacement directions, and $\bm{B}$ is the strain-displacement matrix \cite{ch14}.
 \begin{align*}
 \bm{u}^e = 
 \begin{bmatrix}
@@ -84,7 +84,7 @@ being the $i^{th}$ shape function on the current element. The shape functions ar
 \label{stress-displacement}
 \bm{\sigma}^e = \bm{C} \bm{B} \bm{u}^e.
 \end{align}
-This relation is later used when we know the displacement vector $\bm{u}^e$ from the solution of \eqref{eq:linEl} and want to look at the stress on each node. 
+This relation is later used when the displacement vector $\bm{u}^e$ is known from the solution of \eqref{eq:linEl} and we want to look at the stress on each node. 
 
 
 

@@ -35,12 +35,12 @@ $\bm{A}^e$ is the stiffness element matrix,
 \begin{align}
 \bm{A}^e = \int_\Omega \bm{B}^T \bm{C} \bm{B} \, d\Omega = \bm{B}^T \bm{C} \bm{B} \cdot V^e
 \end{align}
-where $V^e$ is the volume of the current element. The reason why we can skip the integral is because the integrand is constant. $\bm{b}^e$ is the element load vector with the $i^{th}$ element being 
+where $V^e$ is the volume of the current element. Because the integrand is constant, we can substitute the integral by the volume of the domain. $\bm{b}^e$ is the element load vector with the $i^{th}$ element 
 
 \begin{align}
 \label{eq:load-vector}
 b^e_i = 
-\int_{\Omega} \bm{\phi_i} \bm{f} \, d\Omega
+\int_{\Omega} \bm{\phi_i} \bm{f} \, d\Omega.
 \end{align}
 
 If $\bm{f}$ is a constant in the element (typically a result of mass density) then \eqref{eq:load-vector} can be calculated exact by a 1 order Gauss quadrature, since the basis functions are linear. 
@@ -51,4 +51,4 @@ We have now presented a linear system for one element. Iterating over all elemen
 \bm{A} \bm{u} = \bm{b}
 \end{equation}
 
-with $\bm{u}$ being the displacement vector for all the nodes in the system. 
+with $\bm{u}$ being the displacement vector for all the nodes in the system. The load vector $\bm{b}$ is a $3n$-vector with 3 spatial directions in each node.
