@@ -27,7 +27,7 @@
 \institute[NTNU]{The Finite Element Method project}
 
 % Datoen blir også trykket på forsida. 
-\date{16. November 2014}
+\date{19. November 2014}
 %\date{} % Bruk denne hvis du ikke vil ha noe dato på forsida.
 
 % Fra her av begynner selve dokumentet
@@ -85,8 +85,8 @@
 \begin{align*}
 \nabla \sigma(u) = -f
 \end{align*}
-with
 \scriptsize
+with
 \begin{align*}
 u(x,y) = 
 \begin{bmatrix}
@@ -94,12 +94,19 @@ u_x \\
 u_y
 \end{bmatrix}
 \end{align*}
-\normalsize{and}
+and %\normalsize{and}
 \scriptsize
 	\begin{align*}
 	f_x = \frac{E}{1-\nu^2} (-2y^2 - x^2 + \nu x^2 - 2\nu xy -2xy + 3 - \nu) \\
-	f_y = \frac{E}{1-\nu^2} (-2x^2 - y^2 + \nu y^2 - 2\nu xy -2xy + 3 - \nu) 
+	f_y = \frac{E}{1-\nu^2} (-2x^2 - y^2 + \nu y^2 - 2\nu xy -2xy + 3 - \nu). 
 	\end{align*}
+	The analytical solution is
+	\begin{align*}
+\bm{u} = \begin{bmatrix}
+\, (x^2-1)(y^2-1) \, \\
+\, (x^2-1)(y^2-1)
+\end{bmatrix}.
+\end{align*}
 \end{frame}
 
 \begin{frame}
