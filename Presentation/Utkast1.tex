@@ -95,7 +95,6 @@ u_y
 \end{bmatrix}
 \end{align*}
 and %\normalsize{and}
-\scriptsize
 	\begin{align*}
 	f_x = \frac{E}{1-\nu^2} (-2y^2 - x^2 + \nu x^2 - 2\nu xy -2xy + 3 - \nu) \\
 	f_y = \frac{E}{1-\nu^2} (-2x^2 - y^2 + \nu y^2 - 2\nu xy -2xy + 3 - \nu). 
@@ -107,6 +106,7 @@ and %\normalsize{and}
 \, (x^2-1)(y^2-1)
 \end{bmatrix}.
 \end{align*}
+
 \end{frame}
 
 \begin{frame}
@@ -155,6 +155,10 @@ and %\normalsize{and}
 
 \begin{frame}
 \frametitle{Linear Elasticity Problem in 3D}
+
+\begin{align*}
+\nabla \sigma(u) = -f
+\end{align*}
 \begin{align*}
 \begin{bmatrix}
 \frac{\partial}{\partial x}, & \frac{\partial}{\partial y}, & \frac{\partial}{\partial z}
@@ -228,7 +232,7 @@ B =
 Element stiffness matrix
 
 \begin{align*}
-A^e &= B^T C B \cdot Volume \\[0.5em]
+A^e &= B^T C B \cdot Vol \\[0.5em]
  &= \scriptsize
 \begin{bmatrix}
 A_{1,xx} & A_{1,xy} & A_{1,xz} &\hdots & \\
@@ -240,33 +244,34 @@ A_{1,zx} & A_{1,zy} & A_{1,zz} &\hdots & \\
 \end{bmatrix}  
 \end{align*}
 \begin{itemize}
-\item B: strain-displacement matrix
-\item C: stress-strain matrix
+\item $B$: strain-displacement matrix
+\item $C$: stress-strain matrix
+\item $Vol$: volume of the element
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-Mapping from element to large system
+Mapping from element matrix to large system
 \\[1em]
 \scriptsize
 $
 A^e = \left[
 \begin{array}{c|c|c|c}
-  {N_{11}} & N_{12} & \, \, . \, \, & . \\[0.3em] \hline
-  N_{21} & N_{22} & . & . \\[0.3em] \hline
+  \textcolor{red}{N_{11}} & \textcolor{cyan}{N_{12}} & \, \, . \, \, & . \\[0.3em] \hline
+  \textcolor{cyan}{N_{21}} & \textcolor{blue}{N_{22}} & . & . \\[0.3em] \hline 
   . & . & . & . \\[0.3em] \hline
-  . & . & . & N_{44}\\[0.3em]
+  . & . & . & \textcolor{magenta}{N_{44}}\\[0.3em]
 \end{array} \right] \rightarrow
 A = \left[
 \begin{array}{c c c c c c c c c c}
-N_{11} &  &  & N_{12} &  & & & & &\\
+ &  &  & &  & & \,\,\,\,\,\,\,\,\,\,\,\,\, & \,\,\,\,\,\,\,\,\,\,\,\,\,\,\, & & \\
 \\
 \\
-N_{21} & & & N_{22} \\
+ & & &  \\
 \\
 \\
 \\
- & & & & & & &   N_{44}\\
+ & & & & & & &   \\
 \\
 \\
 \end{array}\right]
@@ -275,20 +280,36 @@ $
 \end{frame}
 
 
+\begin{frame}
+Mapping from element matrix to large system
+\\[1em]
+\scriptsize
+$
+A^e = \left[
+\begin{array}{c|c|c|c}
+  \textcolor{red}{N_{11}} & \textcolor{cyan}{N_{12}} & \, \, . \, \, & . \\[0.3em] \hline
+  \textcolor{cyan}{N_{21}} & \textcolor{blue}{N_{22}} & . & . \\[0.3em] \hline 
+  . & . & . & . \\[0.3em] \hline
+  . & . & . & \textcolor{magenta}{N_{44}}\\[0.3em]
+\end{array} \right] \rightarrow
+A = \left[
+\begin{array}{c c c c c c c c c c}
+\textcolor{red}{N_{11}} &  &  & \textcolor{cyan}{N_{12}} &  \, & & & & &\\
+\\
+\\
+\textcolor{cyan}{N_{21}} & & & \textcolor{blue}{N_{22}} \\
+\\
+\\
+\\
+ & & & & & & &   \textcolor{magenta}{N_{44}}\\
+\\
+\\
+\end{array}\right]
+$
+
+\end{frame}
+
 % Car: 120 900 tonn
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -355,8 +376,12 @@ Finally, a bridge!
 \begin{frame}
 The bridge is solved for displacement and Von Mises stress.
 \begin{figure}
-  		\includegraphics[width=\textwidth]{figures/onlyBridge}
+  		\includegraphics[width=0.7\textwidth]{figures/onlyBridge}
 \end{figure}
+\scriptsize
+\begin{align*}
+\sigma_{v} = \sqrt{ \frac{1}{2} \left[  (\sigma_{xx} -\sigma_{yy})^2 + (\sigma_{yy} -\sigma_{zz})^2 + (\sigma_{zz} -\sigma_{xx})^2 + 6\left(\sigma_{xy}^2 + \sigma_{yz}^2 + \sigma_{xz}^2 \right) \right]}.
+\end{align*}
 \end{frame}
 
 
